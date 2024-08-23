@@ -16,7 +16,7 @@ const Login = () => {
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <TextField id="password" label="Password" variant="outlined" />
         <Box sx={{ display: "flex", justifyContent: "right" }}>
-          <a>Forgot Password</a>
+          <a>Forgot Password?</a>
         </Box>
       </Box>
       <Button variant="contained" sx={{ backgroundColor: "#006E1A" }}>

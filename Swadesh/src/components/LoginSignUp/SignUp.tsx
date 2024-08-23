@@ -2,6 +2,7 @@ import { Box, Button, styled, TextField } from "@mui/material";
 import { useState } from "react";
 import { ImUpload } from "react-icons/im";
 
+
 const SignUp = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const VisuallyHiddenInput = styled("input")({
