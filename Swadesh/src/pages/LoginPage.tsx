@@ -17,7 +17,7 @@ const LoginPage = () => {
         height: "100vh",
         width: "100vw",
         backgroundImage: `url(${BackgroundImage})`,
-        backgroundSize: "cover", // Ensures the image covers the entire box
+        backgroundSize: "cover", 
         backgroundPosition: "center",
         display: "flex",
         justifyContent: "center",

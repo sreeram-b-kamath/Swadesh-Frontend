@@ -1,10 +1,13 @@
 import React from "react";
-import LoginPage from "./pages/LoginPage";
+import BasicRestrurantDetails from "./pages/BasicRestrurantDetails";
+// import LoginPage from "./pages/LoginPage";
+
 
 const App = () => {
   return (
     <div>
-      <LoginPage />
+      {/* <LoginPage /> */}
+      <BasicRestrurantDetails />
     </div>
   );
 };
