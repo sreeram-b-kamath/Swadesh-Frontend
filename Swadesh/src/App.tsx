@@ -1,10 +1,11 @@
 import React from "react";
-import Filter from "./pages/FilterPage/Filter";
-import MenuPage from "./pages/MenuPage/MenuPage";
+import RoutesComponent from './routes/Route';
+// import LoginPage from "./pages/LoginPage/LoginPage";
+
 const App = () => {
   return (
     <div>
-      <MenuPage />
+      <RoutesComponent />
     </div>
   );
 };
