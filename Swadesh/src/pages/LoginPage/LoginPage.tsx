@@ -1,9 +1,9 @@
 import Box from "@mui/material/Box";
-import BackgroundImage from "../assets/SwadeshRegisterBackgroundImage.png";
+import BackgroundImage from "../../assets/SwadeshRegisterBackgroundImage.png";
 import { Tab, Tabs } from "@mui/material";
 import { useState } from "react";
-import Login from "../components/LoginSignUp/Login";
-import SignUp from "../components/LoginSignUp/SignUp";
+import Login from "../../components/LoginSignUp/Login";
+import SignUp from "../../components/LoginSignUp/SignUp";
 
 const LoginPage = () => {
   const [tabValue, setTabValue] = useState<number>(0);
