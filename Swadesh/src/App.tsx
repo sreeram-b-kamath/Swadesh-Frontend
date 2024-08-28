@@ -1,10 +1,10 @@
 import React from "react";
-import LoginPage from "./pages/LoginPage";
-
+import Filter from "./pages/FilterPage/Filter";
+import MenuPage from "./pages/MenuPage/MenuPage";
 const App = () => {
   return (
     <div>
-      <LoginPage />
+      <MenuPage />
     </div>
   );
 };
