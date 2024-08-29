@@ -1,10 +1,12 @@
 import React from "react";
-import LoginPage from "./pages/LoginPage";
+// import LoginPage from "./pages/LoginPage";
+import AddToMenu from "./pages/AddToMenu";
 
 const App = () => {
   return (
     <div>
-      <LoginPage />
+      {/* <LoginPage /> */}
+      <AddToMenu />
     </div>
   );
 };
