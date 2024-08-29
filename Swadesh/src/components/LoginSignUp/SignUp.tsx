@@ -4,6 +4,8 @@ import { ImUpload } from 'react-icons/im';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import Grid from '@mui/material/Grid';
+
 import Resizer from 'react-image-file-resizer';
 import { useOTPStore } from '../../Store/useOTPStore'; // Adjust the import path as needed
 
@@ -37,13 +39,23 @@ const SignUp = () => {
       name: '',
       email: '',
       password: '',
-      logo:''
+      logo:'',
+      ownerName: '',
+      contactName: '',
+      restaurantLocation:''
+
+
+
     },
     validationSchema: Yup.object({
       name: Yup.string().required('Restaurant Name is required'),
       email: Yup.string().email('Invalid email address').required('Email is required'),
       password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
       logo: Yup.string().required('Logo is required'),
+      ownerName: Yup.string().required('Owner Name is required'),
+      contactName: Yup.string().required('Contact Name is required'),
+      restaurantLocation: Yup.string().required('Restaurant Location is required')
+
     }),
     onSubmit: async (values) => {
       await signUpWithEmail(values.email);
@@ -107,42 +119,100 @@ const SignUp = () => {
         <Typography color="error">{formik.errors.logo}</Typography>
       )}
 
-      <TextField
-        id="name"
-        name="name"
-        label="Restaurant Name"
-        variant="outlined"
-        value={formik.values.name}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.name && Boolean(formik.errors.name)}
-        helperText={formik.touched.name && formik.errors.name}
-      />
+<Grid container spacing={2}>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      id="name"
+      name="name"
+      label="Restaurant Name"
+      variant="outlined"
+      fullWidth
+      value={formik.values.name}
+      onChange={formik.handleChange}
+      onBlur={formik.handleBlur}
+      error={formik.touched.name && Boolean(formik.errors.name)}
+      helperText={formik.touched.name && formik.errors.name}
+    />
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      id="email"
+      name="email"
+      label="Email"
+      variant="outlined"
+      fullWidth
+      value={formik.values.email}
+      onChange={formik.handleChange}
+      onBlur={formik.handleBlur}
+      error={formik.touched.email && Boolean(formik.errors.email)}
+      helperText={formik.touched.email && formik.errors.email}
+    />
+  </Grid>
 
-      <TextField
-        id="email"
-        name="email"
-        label="Email"
-        variant="outlined"
-        value={formik.values.email}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.email && Boolean(formik.errors.email)}
-        helperText={formik.touched.email && formik.errors.email}
-      />
+  <Grid item xs={12} sm={6}>
+    <TextField
+      id="password"
+      name="password"
+      label="Password"
+      type="password"
+      variant="outlined"
+      fullWidth
+      value={formik.values.password}
+      onChange={formik.handleChange}
+      onBlur={formik.handleBlur}
+      error={formik.touched.password && Boolean(formik.errors.password)}
+      helperText={formik.touched.password && formik.errors.password}
+    />
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      id="ownerName"
+      name="ownerName"
+      label="Owner Name"
+      type="text"
+      variant="outlined"
+      fullWidth
+      value={formik.values.ownerName}
+      onChange={formik.handleChange}
+      onBlur={formik.handleBlur}
+      error={formik.touched.ownerName && Boolean(formik.errors.ownerName)}
+      helperText={formik.touched.ownerName && formik.errors.ownerName}
+    />
+  </Grid>
 
-      <TextField
-        id="password"
-        name="password"
-        label="Password"
-        type="password"
-        variant="outlined"
-        value={formik.values.password}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.password && Boolean(formik.errors.password)}
-        helperText={formik.touched.password && formik.errors.password}
-      />
+  <Grid item xs={12} sm={6}>
+    <TextField
+      id="contactName"
+      name="contactName"
+      label="Contact Name"
+      type="text"
+      variant="outlined"
+      fullWidth
+      value={formik.values.contactName}
+      onChange={formik.handleChange}
+      onBlur={formik.handleBlur}
+      error={formik.touched.contactName && Boolean(formik.errors.contactName)}
+      helperText={formik.touched.contactName && formik.errors.contactName}
+    />
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      id="restaurantLocation"
+      name="restaurantLocation"
+      label="Restaurant Location"
+      type="text"
+      variant="outlined"
+      fullWidth
+      value={formik.values.restaurantLocation}
+      onChange={formik.handleChange}
+      onBlur={formik.handleBlur}
+      error={formik.touched.restaurantLocation && Boolean(formik.errors.restaurantLocation)}
+      helperText={formik.touched.restaurantLocation && formik.errors.restaurantLocation}
+    />
+  </Grid>
+</Grid>
+
+
 
       <Button variant="contained" sx={{ backgroundColor: '#006E1A' }} type="submit">
         Create Account
