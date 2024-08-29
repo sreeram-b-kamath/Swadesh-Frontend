@@ -41,11 +41,8 @@ const SignUp = () => {
       password: '',
       logo:'',
       ownerName: '',
-      contactName: '',
-      restaurantLocation:''
-
-
-
+      address:'',
+      contact: '',
     },
     validationSchema: Yup.object({
       name: Yup.string().required('Restaurant Name is required'),
@@ -53,14 +50,14 @@ const SignUp = () => {
       password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
       logo: Yup.string().required('Logo is required'),
       ownerName: Yup.string().required('Owner Name is required'),
-      contactName: Yup.string().required('Contact Name is required'),
-      restaurantLocation: Yup.string().required('Restaurant Location is required')
+      contact: Yup.string().required('Contact Number is required'),
+      address: Yup.string().required('Restaurant Location is required')
 
     }),
     onSubmit: async (values) => {
       await signUpWithEmail(values.email);
-      const { name, email, password, logo } = values;
-      navigate('/otp-verification', { state: { name, email, password, logo } });
+      const { name, email, password, logo, ownerName, contact, address } = values;
+      navigate('/otp-verification', { state: { name, email, password, logo, ownerName, contact, address } });
     },
   });
 
@@ -182,32 +179,32 @@ const SignUp = () => {
 
   <Grid item xs={12} sm={6}>
     <TextField
-      id="contactName"
-      name="contactName"
-      label="Contact Name"
+      id="contact"
+      name="contact"
+      label="Contact"
       type="text"
       variant="outlined"
       fullWidth
-      value={formik.values.contactName}
+      value={formik.values.contact}
       onChange={formik.handleChange}
       onBlur={formik.handleBlur}
-      error={formik.touched.contactName && Boolean(formik.errors.contactName)}
-      helperText={formik.touched.contactName && formik.errors.contactName}
+      error={formik.touched.contact && Boolean(formik.errors.contact)}
+      helperText={formik.touched.contact && formik.errors.contact}
     />
   </Grid>
   <Grid item xs={12} sm={6}>
     <TextField
-      id="restaurantLocation"
-      name="restaurantLocation"
-      label="Restaurant Location"
+      id="address"
+      name="address"
+      label="Address"
       type="text"
       variant="outlined"
       fullWidth
-      value={formik.values.restaurantLocation}
+      value={formik.values.address}
       onChange={formik.handleChange}
       onBlur={formik.handleBlur}
-      error={formik.touched.restaurantLocation && Boolean(formik.errors.restaurantLocation)}
-      helperText={formik.touched.restaurantLocation && formik.errors.restaurantLocation}
+      error={formik.touched.address && Boolean(formik.errors.address)}
+      helperText={formik.touched.address && formik.errors.address}
     />
   </Grid>
 </Grid>

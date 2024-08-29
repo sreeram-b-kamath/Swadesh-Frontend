@@ -29,7 +29,7 @@ const LoginPage = () => {
           display: "flex",
           flexDirection: "column",
           height: "75%",
-          width: "25%",
+          width: "40%",
           justifyContent: "center",
           alignItems: "center",
           boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
