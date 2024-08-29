@@ -1,0 +1,103 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.background {
+  /* background-color: black;
+    padding: 20px;
+    text-align: center;
+    width: 100vw;
+    font-family: "Roboto Flex", sans-serif;
+    font-weight: 1000; */
+  background-color: #f2fdeb;
+  height: 100vh;
+  width: 100vw;
+}
+.foodrestriction {
+  color: #006e1a;
+  font-family: "Roboto Flex", sans-serif;
+  font-weight: 1000;
+  font-size: 30px;
+  padding-top: 30vh;
+  padding: 30vh 5vw 0px 5vw;
+  text-align: center;
+}
+.bottombar {
+  height: 10vh;
+  width: 100vw;
+  background-color: #e6f1e0;
+  position: absolute;
+  bottom: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  gap: 8px;
+}
+
+.yesbutton {
+  background-color: #006e1a;
+  color: white;
+  height: 40px;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  /* display: inline-flex;       */
+  align-items: center;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+  font-family: "Roboto Flex", sans-serif;
+  font-weight: 500;
+}
+
+.yesbutton:hover {
+  background-color: wheat; /* Darker green on hover */
+}
+
+.yesbutton .checkmark {
+  margin-right: 8px; /* Space between icon and text */
+}
+
+.nobutton {
+  background-color: #82db7d;
+  color: #002203;
+  height: 40px;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  /* display: inline-flex;       */
+  align-items: center;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+  font-family: "Roboto Flex", sans-serif;
+  font-weight: 600;
+}
+
+.nobutton:hover {
+  background-color: wheat; /* Darker green on hover */
+}
+
+.nobutton .checkmark {
+  margin-right: 8px; /* Space between icon and text */
+}
+
+.filter_container{
+  color: #006e1a; 
+  /* background-color: #82db7d; */
+  text-align: center;
+  /* height: 40vh; */
+  width: 100vw;
+  padding: 4vh 0px 0px 0px;
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  font-family: "Roboto Flex", sans-serif;
+  font-weight: 900;
+  font-size: 24px;
+}

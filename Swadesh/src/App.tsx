@@ -1,12 +1,11 @@
 import React from "react";
-// import LoginPage from "./pages/LoginPage";
-import AddToMenu from "./pages/AddToMenu";
+import RoutesComponent from './routes/Route';
+// import LoginPage from "./pages/LoginPage/LoginPage";
 
 const App = () => {
   return (
     <div>
-      {/* <LoginPage /> */}
-      <AddToMenu />
+      <RoutesComponent />
     </div>
   );
 };
