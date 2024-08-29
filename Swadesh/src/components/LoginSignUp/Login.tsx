@@ -1,12 +1,12 @@
 import React from "react";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, CircularProgress, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useNavigate } from 'react-router-dom';
+import { useLoginStore } from '../../Store/useLoginStore'; // Adjust the import path as needed
 
 const Login = () => {
-  const navigate = useNavigate();
-  // Define validation schema using Yup
+  const { loginUser, loginLoading, loginError } = useLoginStore(); // Now correctly typed
+
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("Invalid email format")
@@ -16,7 +16,6 @@ const Login = () => {
       .required("Password is required"),
   });
 
-  // Initialize Formik with initial values, validation schema, and submit handler
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -24,7 +23,7 @@ const Login = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      navigate('/otp-verification');
+      loginUser(values.email, values.password); // Call the loginUser action from the store
     },
   });
 
@@ -52,7 +51,7 @@ const Login = () => {
         error={formik.touched.email && Boolean(formik.errors.email)}
         helperText={formik.touched.email && formik.errors.email}
       />
-      <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
+      <Box sx={{ display: "flex", flexDirection: "column", width: "48%" }}>
         <TextField
           id="password"
           name="password"
@@ -62,19 +61,21 @@ const Login = () => {
           value={formik.values.password}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
         />
         <Box sx={{ display: "flex", justifyContent: "right" }}>
           <a href="#">Forgot Password?</a>
         </Box>
       </Box>
+      {loginError && (
+        <Typography color="error">{loginError}</Typography>
+      )}
       <Button
         variant="contained"
         sx={{ backgroundColor: "#006E1A" }}
         type="submit"
+        disabled={loginLoading}
       >
-        Login
+        {loginLoading ? <CircularProgress size={24} /> : 'Login'}
       </Button>
     </Box>
   );

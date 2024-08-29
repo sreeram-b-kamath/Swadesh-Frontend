@@ -56,17 +56,20 @@ const OtpVerificationPage: React.FC<OtpVerificationProps> = ({ onSubmit }) => {
   const [otp, setOtp] = React.useState('');
   const { state } = useLocation();
 
-  const { setOtp: setStoreOtp, registerUser, setEmail, setRestaurantName, setPassword, setLogo } = useRegistrationStore();
+  const { setOtp: setStoreOtp, registerUser, setEmail, setRestaurantName, setPassword, setLogo, setOwnerName, setContact, setAddress } = useRegistrationStore();
 
   React.useEffect(() => {
     if (state) {
-      const { name, email, password, logo } = state;
+      const { name, email, password, logo, ownerName, contact, address } = state;
       setEmail(email);
       setRestaurantName(name);
       setPassword(password);
       setLogo(logo);
+      setOwnerName(ownerName);
+      setContact(contact);
+      setAddress(address);
     }
-  }, [state, setEmail, setRestaurantName, setPassword, setLogo]);
+  }, [state, setEmail, setRestaurantName, setPassword, setLogo, setOwnerName, setContact, setAddress]);
 
   const handleChange = (newValue: any) => {
     setOtp(newValue);
