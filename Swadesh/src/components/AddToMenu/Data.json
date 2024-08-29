@@ -1,0 +1,124 @@
+[
+    {
+      "id": 1,
+      "dishName": "Fried Rice",
+      "price": 140,
+      "ingredients": "Rice, Vegetables, Soy Sauce, Spices",
+      "image": "https://images.pexels.com/photos/723198/pexels-photo-723198.jpeg?auto=compress&cs=tinysrgb&w=400",
+      "isVeg": true
+    },
+    {
+      "id": 2,
+      "dishName": "Chicken Curry",
+      "price": 250,
+      "ingredients": "Chicken, Curry Powder, Tomatoes, Onions, Spices",
+      "image":"https://images.pexels.com/photos/8992836/pexels-photo-8992836.jpeg?auto=compress&cs=tinysrgb&w=400" ,
+      "isVeg": false
+    },
+    {
+      "id": 3,
+      "dishName": "Pasta Alfredo",
+      "price": 180,
+      "ingredients": "Pasta, Cream, Parmesan Cheese, Garlic, Butter",
+      "image": "https://images.pexels.com/photos/11220209/pexels-photo-11220209.jpeg?auto=compress&cs=tinysrgb&w=400",
+      "isVeg": true
+    },
+    {
+      "id": 4,
+      "dishName": "Caesar Salad",
+      "price": 120,
+      "ingredients": "Lettuce, Croutons, Parmesan Cheese, Caesar Dressing",
+      "image": "https://images.pexels.com/photos/26756758/pexels-photo-26756758/free-photo-of-bread-with-spinach-salmon-and-egg.jpeg?auto=compress&cs=tinysrgb&w=400",
+      "isVeg": true
+    },
+    {
+      "id": 5,
+      "dishName": "Beef Tacos",
+      "price": 200,
+      "ingredients": "Beef, Taco Shells, Lettuce, Cheese, Salsa",
+      "image": "https://images.pexels.com/photos/5454019/pexels-photo-5454019.jpeg?auto=compress&cs=tinysrgb&w=400",
+      "isVeg": false
+    },
+    {
+      "id": 6,
+      "dishName": "Vegetable Soup",
+      "price": 110,
+      "ingredients": "Vegetables, Broth, Herbs, Spices",
+      "image": "https://images.pexels.com/photos/5692397/pexels-photo-5692397.jpeg?auto=compress&cs=tinysrgb&w=400",
+      "isVeg": true
+    },
+    {
+      "id": 7,
+      "dishName": "Margherita Pizza",
+      "price": 220,
+      "ingredients": "Pizza Dough, Tomato Sauce, Mozzarella Cheese, Basil",
+      "image": "https://images.pexels.com/photos/3408745/pexels-photo-3408745.jpeg?auto=compress&cs=tinysrgb&w=400",
+      "isVeg": true
+    },
+    {
+      "id": 8,
+      "dishName": "Grilled Salmon",
+      "price": 300,
+      "ingredients": "Salmon, Olive Oil, Lemon, Herbs, Spices",
+      "image": "https://images.pexels.com/photos/1029635/pexels-photo-1029635.jpeg?auto=compress&cs=tinysrgb&w=400",
+      "isVeg": false
+    },
+    {
+      "id": 9,
+      "dishName": "Chicken Caesar Wrap",
+      "price": 160,
+      "ingredients": "Chicken, Caesar Dressing, Lettuce, Tortilla Wrap",
+      "image": "https://images.pexels.com/photos/4091786/pexels-photo-4091786.jpeg?auto=compress&cs=tinysrgb&w=400",
+      "isVeg": false
+    },
+    {
+      "id": 10,
+      "dishName": "Chocolate Cake",
+      "price": 150,
+      "ingredients": "Flour, Cocoa Powder, Sugar, Eggs, Butter",
+      "image": "https://images.pexels.com/photos/4611969/pexels-photo-4611969.jpeg?auto=compress&cs=tinysrgb&w=400",
+      "isVeg": true
+    },
+    {
+      "id": 11,
+      "dishName": "Chocolate Cake",
+      "price": 150,
+      "ingredients": "Flour, Cocoa Powder, Sugar, Eggs, Butter",
+      "image": "https://images.pexels.com/photos/4611969/pexels-photo-4611969.jpeg?auto=compress&cs=tinysrgb&w=400",
+      "isVeg": true
+    },
+    {
+      "id": 12,
+      "dishName": "Chocolate Cake",
+      "price": 150,
+      "ingredients": "Flour, Cocoa Powder, Sugar, Eggs, Butter",
+      "image": "https://images.pexels.com/photos/4611969/pexels-photo-4611969.jpeg?auto=compress&cs=tinysrgb&w=400",
+      "isVeg": true
+    },
+    {
+      "id": 13,
+      "dishName": "Chocolate Cake",
+      "price": 150,
+      "ingredients": "Flour, Cocoa Powder, Sugar, Eggs, Butter",
+      "image": "https://images.pexels.com/photos/4611969/pexels-photo-4611969.jpeg?auto=compress&cs=tinysrgb&w=400",
+      "isVeg": true
+    },
+    {
+      "id": 14,
+      "dishName": "Chocolate Cake",
+      "price": 150,
+      "ingredients": "Flour, Cocoa Powder, Sugar, Eggs, Butter",
+      "image": "https://images.pexels.com/photos/4611969/pexels-photo-4611969.jpeg?auto=compress&cs=tinysrgb&w=400",
+      "isVeg": true
+    },
+    {
+      "id": 15,
+      "dishName": "Chocolate Cake",
+      "price": 150,
+      "ingredients": "Flour, Cocoa Powder, Sugar, Eggs, Butter",
+      "image": "https://images.pexels.com/photos/4611969/pexels-photo-4611969.jpeg?auto=compress&cs=tinysrgb&w=400",
+      "isVeg": true
+    }
+
+  ]
+  
