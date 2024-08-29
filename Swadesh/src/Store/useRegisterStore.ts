@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 interface RegistrationState {
   email: string;
@@ -6,11 +6,17 @@ interface RegistrationState {
   restaurantName: string;
   password: string;
   logo: string;
+  ownerName: string;
+  contact: string;
+  address: string;
   setEmail: (email: string) => void;
   setOtp: (otp: string) => void;
   setRestaurantName: (name: string) => void;
   setPassword: (password: string) => void;
   setLogo: (logo: string) => void;
+  setOwnerName: (ownerName: string) => void;
+  setContact: (contact: string) => void;
+  setAddress: (address: string) => void;
   registerUser: () => Promise<void>;
 }
 
@@ -20,13 +26,19 @@ export const useRegistrationStore = create<RegistrationState>((set, get) => ({
   restaurantName: '',
   password: '',
   logo: '',
+  ownerName: '',
+  contact: '',
+  address: '',
   setEmail: (email) => set({ email }),
   setOtp: (otp) => set({ otp }),
   setRestaurantName: (name) => set({ restaurantName: name }),
   setPassword: (password) => set({ password }),
   setLogo: (logo) => set({ logo }),
+  setOwnerName: (ownerName) => set({ ownerName }),
+  setContact: (contact) => set({ contact }),
+  setAddress: (address) => set({ address }),
   registerUser: async () => {
-    const { email, otp, restaurantName, password, logo } = get();
+    const { email, otp, restaurantName, password, logo, ownerName, contact, address } = get();
 
     const requestBody = {
       email,
@@ -36,6 +48,9 @@ export const useRegistrationStore = create<RegistrationState>((set, get) => ({
         email,
         password,
         logo,
+        ownerName,
+        contact,
+        address
       },
     };
 
@@ -49,7 +64,8 @@ export const useRegistrationStore = create<RegistrationState>((set, get) => ({
       });
 
       if (!response.ok) {
-        throw new Error('Registration failed');
+        const errorText = await response.text();
+        throw new Error(`Registration failed: ${errorText}`);
       }
 
       const data = await response.json();
@@ -61,5 +77,3 @@ export const useRegistrationStore = create<RegistrationState>((set, get) => ({
     }
   },
 }));
-
-
