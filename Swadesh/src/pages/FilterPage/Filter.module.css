@@ -55,9 +55,9 @@
   font-weight: 500;
 }
 
-.yesbutton:hover {
-  background-color: wheat; /* Darker green on hover */
-}
+/* .yesbutton:hover {
+  background-color: wheat; 
+} */
 
 .yesbutton .checkmark {
   margin-right: 8px; /* Space between icon and text */

@@ -1,5 +1,5 @@
 
-import create from 'zustand';
+import {create} from 'zustand';
 import axios from 'axios';
 
 interface AuthState {
