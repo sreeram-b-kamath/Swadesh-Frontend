@@ -7,6 +7,8 @@ import Preference from '../pages/Preference/Preference';
 import Filter from '../pages/FilterPage/Filter';
 import Menu from '../components/MenuComponent/Menu';
 import MenuPage from '../pages/MenuPage/MenuPage';
+import AddToMenu from '../pages/AddToMenu';
+
 
 const RoutesComponent = () => {
   return (
@@ -20,6 +22,7 @@ const RoutesComponent = () => {
         <Route path="/preference" element={<Preference />} /> 
         <Route path="/preference-selection" element={<Filter />} />  
         <Route path="/menu" element={<MenuPage />} />        
+        <Route path= "/chef-restaurant" element = {<AddToMenu/>} />
       </Routes>
     </BrowserRouter>
   );
