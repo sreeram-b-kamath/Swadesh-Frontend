@@ -1,11 +1,14 @@
 import React from "react";
-import LoginPage from "./pages/LoginPage";
+import RoutesComponent from './routes/Route';
+// import LoginPage from "./pages/LoginPage/LoginPage";
+// import CustomCategories from "./pages/CustomCategories";
+// import CustomRestrictions from "./pages/CustomRestrictions";
 
 const App = () => {
   return (
-    <div>
-      <LoginPage />
-    </div>
+      <RoutesComponent />
+      /* <CustomCategories/>
+      <CustomRestrictions/>*/
   );
 };
 
