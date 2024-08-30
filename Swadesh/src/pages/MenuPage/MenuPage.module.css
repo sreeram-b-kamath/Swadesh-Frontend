@@ -20,6 +20,10 @@
     padding-left: 5vw;
   }
 
+  h2{
+    /* padding: 0px; */
+  }
+
   .appbar_heading{
     color: #006e1a;
     font-size: 1.2rem;

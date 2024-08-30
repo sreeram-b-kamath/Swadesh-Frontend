@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./Filter.module.css";
 import FilterChips from "../../components/ChipComponent/ChipComponent";
+import tick from "../../assets/tick.svg"
 
 
 function Filter() {
@@ -16,7 +17,7 @@ function Filter() {
       </div>
       <div className={styles.bottombar}>
         <button className={styles.yesbutton}>
-          <span className="checkmark">✔</span> Apply
+          <span className="checkmark"><img src={tick} alt="" /></span> Apply
         </button>
         
       </div>
