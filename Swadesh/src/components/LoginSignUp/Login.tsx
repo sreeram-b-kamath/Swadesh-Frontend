@@ -27,7 +27,7 @@ const Login = () => {
     onSubmit: async (values) => {
       const success = await loginUser(values.email, values.password); // Call the loginUser action from the store
       if (success) {
-        navigate('/chef-restaurant'); // Navigate to the dashboard or another page upon success
+        navigate('/add-to-menu'); // Navigate to the dashboard or another page upon success
       }
     },
   });
