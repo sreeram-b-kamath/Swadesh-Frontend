@@ -5,10 +5,13 @@ import { AddButton } from "../components/AddToMenu/AddButton";
 import { useState } from "react";
 import { AddToMenuForm } from "../components/AddToMenu/AddToMenuForm";
 import AddOptionsModal from "../components/AddToMenu/AddOptionsModal";
+import { useNavigate } from "react-router-dom";
+
 
 const AddToMenu = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleAddClick = () => {
     setModalOpen(true);
@@ -19,8 +22,12 @@ const AddToMenu = () => {
   };
   const handleOptionSelect = (option: string) => {
     if (option === "addItemToMenu") {
-      setShowForm(true);
-    } else {
+      setShowForm(true);}
+      else if (option === "addRestrictions") {
+        navigate('/restrictions');
+    } else if (option === "addCategories") {
+      navigate('/categories');
+  } else {
       setShowForm(false);
     }
     setModalOpen(false);
