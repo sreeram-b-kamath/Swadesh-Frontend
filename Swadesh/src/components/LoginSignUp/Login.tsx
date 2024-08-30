@@ -2,10 +2,12 @@ import React from "react";
 import { Box, Button, TextField, CircularProgress, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useLoginStore } from '../../Store/useLoginStore'; // Adjust the import path as needed
 
 const Login = () => {
-  const { loginUser, loginLoading, loginError } = useLoginStore(); // Now correctly typed
+  const navigate = useNavigate(); // Initialize navigate
+  const { loginUser, loginLoading, loginError, loginSuccess } = useLoginStore(); // Now correctly typed
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -22,8 +24,11 @@ const Login = () => {
       password: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      loginUser(values.email, values.password); // Call the loginUser action from the store
+    onSubmit: async (values) => {
+      const success = await loginUser(values.email, values.password); // Call the loginUser action from the store
+      if (success) {
+        navigate('/chef-restaurant'); // Navigate to the dashboard or another page upon success
+      }
     },
   });
 
@@ -61,6 +66,8 @@ const Login = () => {
           value={formik.values.password}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
+          error={formik.touched.password && Boolean(formik.errors.password)}
+          helperText={formik.touched.password && formik.errors.password}
         />
         <Box sx={{ display: "flex", justifyContent: "right" }}>
           <a href="#">Forgot Password?</a>
