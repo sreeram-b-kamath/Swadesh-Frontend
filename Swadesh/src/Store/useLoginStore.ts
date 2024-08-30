@@ -1,13 +1,12 @@
-// useLoginStore.ts
 import { create } from 'zustand';
-import axios from 'axios'; // or any other HTTP library you prefer
+import axios from 'axios';
 
 // Define types for the state and actions
 interface LoginState {
   loginLoading: boolean;
   loginError: string | null;
   loginSuccess: boolean;
-  loginUser: (email: string, password: string) => Promise<void>;
+  loginUser: (email: string, password: string) => Promise<boolean>;
 }
 
 export const useLoginStore = create<LoginState>((set) => ({
@@ -20,12 +19,16 @@ export const useLoginStore = create<LoginState>((set) => ({
 
     try {
       const response = await axios.post('https://localhost:7107/api/Register/login', { email, password });
+      const { token } = response.data; // Adjust based on your actual response structure
+      localStorage.setItem('authToken', token);
+
       set({ loginLoading: false, loginSuccess: true });
-      // Handle successful login response here, like storing the token or user info
-      console.log('Login successful:', response.data);
-    } catch (error : any) {
-      set({ loginLoading: false, loginError: error.message, loginSuccess: false });
-      console.error('Login failed:', error.message);
+      return true; // Indicate success
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || error.message || 'Something went wrong';
+      set({ loginLoading: false, loginError: errorMessage, loginSuccess: false });
+      console.error('Login failed:', errorMessage);
+      return false; // Indicate failure
     }
   },
 }));
