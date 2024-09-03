@@ -1,10 +1,11 @@
-import { Box, Button } from "@mui/material";
-import RecipeReviewCard from "../components/AddToMenu/DishCard";
+import { Box } from "@mui/material";
+import DishCard from "../components/AddToMenu/DishCard";
 import Navbar from "../components/AddToMenu/navbar";
 import { AddButton } from "../components/AddToMenu/AddButton";
 import { useState } from "react";
 import { AddToMenuForm } from "../components/AddToMenu/AddToMenuForm";
 import AddOptionsModal from "../components/AddToMenu/AddOptionsModal";
+import axios from "axios";
 
 const AddToMenu = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
@@ -26,12 +27,51 @@ const AddToMenu = () => {
     setModalOpen(false);
   };
 
-  const handleSave = () => {
-    setShowForm(false);
-  };
   const handleCancel = () => {
     setShowForm(false);
   };
+  const initialValues = {
+    name: "",
+    description: "",
+    primaryImage: "",
+    money: 0,
+    category: "",
+    menuCategoryId: 0,
+    restrictions: [] as number[],
+    menuFilterIds: [] as number[],
+    ingredients: [] as number[],
+    ingredientIds: [] as number[],
+    restaurantId: 1,
+  };
+
+  const handleSubmit = async (values: typeof initialValues) => {
+    try {
+      console.log("Menu item entered:");
+
+      const dataToPost = {
+        name: values.name,
+        primaryImage: values.primaryImage,
+        description: values.description,
+        money: values.money,
+        restaurantId: values.restaurantId,
+        menuCategoryId: values.menuCategoryId,
+        menuFilterIds: values.menuFilterIds,
+        ingredientIds: values.ingredients,
+      };
+
+      const response = await axios.post(
+        "https://localhost:7107/api/MenuItems/PostToMenuAsync",
+        dataToPost
+      );
+
+      console.log("Data posted successfully", response.data);
+      alert("Added to your menu Succesfully");
+      setShowForm(false);
+    } catch (error) {
+      console.error("Error posting data", error);
+    }
+  };
+
   return (
     <>
       <Box
@@ -45,8 +85,8 @@ const AddToMenu = () => {
         <Navbar />
         {showForm ? (
           <Box>
-            <AddToMenuForm />
-            <Box
+            <AddToMenuForm onSubmit={handleSubmit} onCancel={handleCancel} />
+            {/* <Box
               sx={{
                 display: "flex",
                 flexDirection: "row",
@@ -71,7 +111,7 @@ const AddToMenu = () => {
                 Go back to menu
               </Button>
               <Button
-                onClick={handleSave}
+                onClick={handleSubmit}
                 variant="contained"
                 color="primary"
                 type="submit"
@@ -86,11 +126,11 @@ const AddToMenu = () => {
               >
                 Add to menu
               </Button>
-            </Box>
+            </Box> */}
           </Box>
         ) : (
           <Box>
-            <RecipeReviewCard />
+            <DishCard />
           </Box>
         )}
         {!showForm && (
