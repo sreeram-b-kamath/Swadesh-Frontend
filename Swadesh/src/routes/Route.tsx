@@ -6,6 +6,11 @@ import LoginPage from '../pages/LoginPage/LoginPage';
 import CustomRestrictions from '../pages/CustomRestrictions';
 import CustomCategories from '../pages/CustomCategories';
 import AddToMenu from '../pages/AddToMenu';
+import Preference from '../pages/Preference/Preference';
+import Filter from '../pages/FilterPage/Filter';
+import Menu from '../components/MenuComponent/Menu';
+import MenuPage from '../pages/MenuPage/MenuPage';
+import AddToMenu from '../pages/AddToMenu';
 
 const RoutesComponent = () => {
   return (
@@ -19,6 +24,9 @@ const RoutesComponent = () => {
          <Route path="/add-to-menu" element={<AddToMenu />} />
          <Route path="/categories" element={<CustomCategories />} />
          <Route path="/restrictions" element={<CustomRestrictions />} />
+        <Route path="/preference" element={<Preference />} /> 
+        <Route path="/preference-selection" element={<Filter />} />  
+        <Route path="/menu" element={<MenuPage />} />        
       </Routes>
     </BrowserRouter>
   );
