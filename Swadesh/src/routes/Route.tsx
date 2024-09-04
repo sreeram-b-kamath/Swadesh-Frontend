@@ -10,7 +10,8 @@ import Preference from '../pages/Preference/Preference';
 import Filter from '../pages/FilterPage/Filter';
 import Menu from '../components/MenuComponent/Menu';
 import MenuPage from '../pages/MenuPage/MenuPage';
-import AddToMenu from '../pages/AddToMenu';
+
+
 
 const RoutesComponent = () => {
   return (

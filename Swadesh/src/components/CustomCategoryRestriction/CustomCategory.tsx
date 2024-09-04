@@ -13,6 +13,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import { useNavigate } from 'react-router-dom';
+
 
 const defaultCategories = ['Appetizers', 'Main Course', 'Dessert'];
 const restaurantId = 1;  
@@ -42,6 +44,8 @@ const CustomCategory = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -88,6 +92,9 @@ const CustomCategory = () => {
     setSelectedCategories(selectedCategories.filter(category => category !== categoryToDelete));
   };
 
+  const handleBack = () => {
+    navigate('/add-to-menu'); 
+  };
   const handleSave = async () => {
     try {
       console.log("Selected Categories:", selectedCategories);
@@ -204,7 +211,7 @@ const CustomCategory = () => {
         ) : (
           <Typography sx={{ color: "grey" }} variant="body1">Nothing selected</Typography>
         )}
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6,gap:1}}>
           <Button 
             variant="contained" 
             sx={{ width: 'auto', backgroundColor: '#446732', borderRadius: 3 }} 
@@ -212,6 +219,13 @@ const CustomCategory = () => {
             onClick={handleSave}
           >
             Save
+          </Button>
+          <Button 
+            variant="contained" 
+            sx={{ width: 'auto', backgroundColor: '#446732', borderRadius: 3 }} 
+            onClick={handleBack}
+          >
+            Back
           </Button>
         </Box>
       </Box>
