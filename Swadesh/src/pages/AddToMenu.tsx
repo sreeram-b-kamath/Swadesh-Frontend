@@ -1,6 +1,6 @@
 import { Box, Button } from "@mui/material";
 import RecipeReviewCard from "../components/AddToMenu/DishCard";
-import Navbar from "../components/AddToMenu/navbar";
+import Navbar from "../components/AddToMenu/Navbar";
 import { AddButton } from "../components/AddToMenu/AddButton";
 import { useState } from "react";
 import { AddToMenuForm } from "../components/AddToMenu/AddToMenuForm";

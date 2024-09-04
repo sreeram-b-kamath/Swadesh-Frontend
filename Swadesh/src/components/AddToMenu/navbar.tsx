@@ -3,7 +3,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { SiCodechef } from "react-icons/si";
 import CloseIcon from "@mui/icons-material/Close";
 import { useRef, useState } from "react";
-const navbar = () => {
+const Navbar = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
   const navRef = useRef();
@@ -134,4 +134,4 @@ const navbar = () => {
   );
 };
 
-export default navbar;
+export default Navbar;
