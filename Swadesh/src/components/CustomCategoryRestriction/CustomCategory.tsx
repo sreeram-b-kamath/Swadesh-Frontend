@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import axios from 'axios'; 
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -45,23 +45,27 @@ const CustomCategory = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
   const navigate = useNavigate();
+  
+
 
 
   useEffect(() => {
     const fetchCategories = async () => {
+    
       try {
         const response = await axios.get(`https://localhost:7107/api/Category/${restaurantId}`);
         const data = response.data;
-
+        console.log(response)
+        console.log(response.data)
+        console.log(response.data.$values)
         if (data && data.$values && data.$values.length > 0) {
           setExistingCategories(data.$values);
           setSelectedCategories(data.$values.map((category: Category) => category.name));
         }
       } catch (error) {
         console.error("Error fetching categories:", error);
-      }
+     }
     };
-
     fetchCategories();
   }, []);
 
@@ -76,6 +80,9 @@ const CustomCategory = () => {
 
   const handleAddCategory = () => {
     const trimmedCategory = newCategory.trim().toLowerCase();
+    console.log(newCategory)
+    console.log(trimmedCategory)
+
     if (trimmedCategory && !selectedCategories.map(category => category.toLowerCase()).includes(trimmedCategory)) {
       setSelectedCategories([...selectedCategories, newCategory.trim()]);
       setNewCategory('');
@@ -87,6 +94,7 @@ const CustomCategory = () => {
     }
     setSnackbarOpen(true);
   };
+  
 
   const handleDeleteCategory = (categoryToDelete: string) => {
     setSelectedCategories(selectedCategories.filter(category => category !== categoryToDelete));
