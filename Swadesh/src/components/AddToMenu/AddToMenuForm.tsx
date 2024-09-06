@@ -9,56 +9,84 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import categoriesData from "./Categories.json";
 import restrictionsData from "./Restrictions.json";
-import ingredientsData from "./Ingredients.json";
-import { Category, Restriction, Ingredient } from "./Types";
+import { Ingredients } from "../../Store/AddToMenu/AddToMenuStore";
+
+import { Category, Restriction } from "../../Store/AddToMenu/AddToMenuStore";
+import {
+  AddToMenuFormProps,
+  initialValues,
+} from "../../Store/AddToMenu/AddToMenuStore";
+import { fetchCategories } from "../../Store/AddToMenu/AddToMenuStore";
+import { fetchIngredients } from "../../Store/AddToMenu/AddToMenuStore";
+import Resizer from "react-image-file-resizer";
+
+const resizeFile = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    Resizer.imageFileResizer(
+      file,
+      300,
+      300,
+      "JPEG",
+      100,
+      0,
+      (uri) => {
+        if (typeof uri === "string") {
+          resolve(uri);
+        } else {
+          reject(new Error("Failed to resize the image"));
+        }
+      },
+      "base64"
+    );
+  });
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Dish Name is required"),
   description: Yup.string().required("Description is required"),
   money: Yup.number()
-  .required("Price is required")
-  .positive("Price must be positive"),
+    .required("Price is required")
+    .positive("Price must be positive"),
   category: Yup.string().required("Category is required"),
   restrictions: Yup.array().of(
-    Yup.number().required("Restrictions are required") // Changed from string
+    Yup.number().required("Restrictions are required")
   ),
   ingredients: Yup.array()
-  .of(Yup.number()) // Changed from string
-  .required("At least one ingredient is required"),
+    .of(Yup.number()) // Changed from string
+    .required("At least one ingredient is required"),
+  primaryImage: Yup.string().required("Image is required"),
 });
 
-interface AddToMenuFormProps {
-  onSubmit: (values: typeof initialValues) => void;
-  onCancel: () => void;
-}
-const initialValues = {
-  name: "",
-  description: "",
-  primaryImage: "",
-  money: 0,
-  category: "",
-  menuCategoryId: 0,
-  restrictions: [] as number[],
-  menuFilterIds: [] as number[],
-  ingredients: [] as number[],
-  ingredientIds: [] as number[],
-  restaurantId: 1,
-};
 export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
   onSubmit,
   onCancel,
 }) => {
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      console.log("file uploaded", file.name);
-    }
-  };
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [ingredients, setIngredients] = useState<Ingredients[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDataForDropdown = async () => {
+      try {
+        const categoriesData = await fetchCategories(
+          initialValues.restaurantId
+        );
+        const ingredientsData = await fetchIngredients();
+        setCategories(categoriesData);
+        setIngredients(ingredientsData);
+        setLoading(false);
+      } catch (error) {
+        setError("Failed to fetch Data...");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDataForDropdown();
+  }, []);
 
   return (
     <>
@@ -77,10 +105,12 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
           handleChange,
           handleBlur,
           handleSubmit,
+          setFieldValue,
+          setFieldError,
         }) => (
           <Form onSubmit={handleSubmit}>
             <Box
-              sx={{ color: "#446732", fontWeight: "bold", marginTop: "10px" }}
+              sx={{ color: "#446732", fontWeight: "bold", marginTop: "4px" }}
             >
               Add to your menu
             </Box>
@@ -89,19 +119,18 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-around",
-                padding: "10px",
+                padding: "4px",
               }}
             >
               <FormControl variant="outlined">
                 <Grid container spacing={2}>
                   {/* <-Dish Name-> */}
-
                   <Grid item xs={12} sm={6} md={4} lg={3}>
                     <Typography
                       sx={{
                         color: "grey",
-                        fontSize: "13px",
-                        marginBottom: "10px",
+                        fontSize: "12px",
+                        marginBottom: "4px",
                       }}
                     >
                       Your Dish's Name
@@ -134,7 +163,7 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                       sx={{
                         color: "grey",
                         fontSize: "13px",
-                        marginBottom: "10px",
+                        marginBottom: "4px",
                       }}
                     >
                       Description
@@ -164,13 +193,12 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                     />
                   </Grid>
                   {/* <-price-> */}
-
                   <Grid item xs={12} sm={6} md={4} lg={3}>
                     <Typography
                       sx={{
                         color: "grey",
-                        fontSize: "13px",
-                        marginBottom: "10px",
+                        fontSize: "12px",
+                        marginBottom: "4px",
                       }}
                     >
                       Price
@@ -198,13 +226,12 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                     />
                   </Grid>
                   {/* <-Category-> */}
-
                   <Grid item xs={12} sm={6} md={4} lg={3}>
                     <Typography
                       sx={{
                         color: "grey",
-                        fontSize: "13px",
-                        marginBottom: "10px",
+                        fontSize: "12px",
+                        marginBottom: "4px",
                       }}
                     >
                       Select category
@@ -232,11 +259,17 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                         onChange={handleChange}
                         onBlur={handleBlur}
                       >
-                        {categoriesData.map((category: Category) => (
-                          <MenuItem key={category.id} value={category.id}>
-                            {category.Name}
-                          </MenuItem>
-                        ))}
+                        {loading ? (
+                          <MenuItem disabled>Loading ...</MenuItem>
+                        ) : error ? (
+                          <MenuItem disabled>{error}</MenuItem>
+                        ) : (
+                          categories.map((category: Category) => (
+                            <MenuItem key={category.id} value={category.id}>
+                              {category.name}
+                            </MenuItem>
+                          ))
+                        )}
                       </Select>
                       <ErrorMessage
                         name="category"
@@ -246,13 +279,12 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                     </FormControl>
                   </Grid>
                   {/* <-Restriction-> */}
-
                   <Grid item xs={12} sm={6} md={4} lg={3}>
                     <Typography
                       sx={{
                         color: "grey",
-                        fontSize: "13px",
-                        marginBottom: "10px",
+                        fontSize: "12px",
+                        marginBottom: "4px",
                       }}
                     >
                       Select Restrictions
@@ -310,11 +342,11 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                     <Typography
                       sx={{
                         color: "grey",
-                        fontSize: "13px",
-                        marginBottom: "10px",
+                        fontSize: "12px",
+                        marginBottom: "4px",
                       }}
                     >
-                      Select Main Ingredients
+                      Select Three Main Ingredients
                     </Typography>
                     <FormControl
                       fullWidth
@@ -337,21 +369,24 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                         id="ingredients"
                         name="ingredients"
                         value={values.ingredients}
-                        onChange={handleChange}
+                        onChange={(event) => {
+                          const { value } = event.target;
+                          if (value.length <= 3) {
+                            setFieldValue("ingredients", value);
+                          }
+                        }}
                         onBlur={handleBlur}
                         renderValue={(selected) =>
                           (selected as number[])
                             .map(
-                              (id) =>
-                                ingredientsData.find((i) => i.id === id)
-                                  ?.ingredient
+                              (id) => ingredients.find((i) => i.id === id)?.name
                             )
                             .join(", ")
                         }
                       >
-                        {ingredientsData.map((ingredient: Ingredient) => (
+                        {ingredients.map((ingredient: Ingredients) => (
                           <MenuItem key={ingredient.id} value={ingredient.id}>
-                            {ingredient.ingredient}
+                            {ingredient.name}
                           </MenuItem>
                         ))}
                       </Select>
@@ -362,13 +397,13 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                       />
                     </FormControl>
                   </Grid>
-
+                  {/* <-Dish's Image-> */}
                   <Grid item xs={12} sm={6} md={4} lg={3}>
                     <Typography
                       sx={{
                         color: "grey",
-                        fontSize: "13px",
-                        marginBottom: "10px",
+                        fontSize: "12px",
+                        marginBottom: "4px",
                       }}
                     >
                       Upload Dish's image
@@ -393,7 +428,20 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                         type="file"
                         accept="image/*"
                         hidden
-                        onChange={handleImageUpload}
+                        onChange={async (event) => {
+                          const file = event.target.files?.[0];
+                          if (file) {
+                            try {
+                              const resizedImage = await resizeFile(file);
+                              setFieldValue("primaryImage", resizedImage);
+                            } catch (error) {
+                              setFieldError(
+                                "primaryImage",
+                                "Failed to resize image"
+                              );
+                            }
+                          }
+                        }}
                       />
                     </Button>
                   </Grid>
@@ -431,7 +479,7 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                   color: "white",
                   fontSize: "9px",
                   backgroundColor: "#446732",
-                  "&:hover": { backgroundColor: "#365d23" }, 
+                  "&:hover": { backgroundColor: "#365d23" },
                   width: "130px",
                 }}
               >

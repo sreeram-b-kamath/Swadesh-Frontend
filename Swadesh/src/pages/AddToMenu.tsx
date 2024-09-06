@@ -6,6 +6,7 @@ import { useState } from "react";
 import { AddToMenuForm } from "../components/AddToMenu/AddToMenuForm";
 import AddOptionsModal from "../components/AddToMenu/AddOptionsModal";
 import axios from "axios";
+import { initialValues } from "../Store/AddToMenu/AddToMenuStore";
 
 const AddToMenu = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
@@ -30,19 +31,6 @@ const AddToMenu = () => {
   const handleCancel = () => {
     setShowForm(false);
   };
-  const initialValues = {
-    name: "",
-    description: "",
-    primaryImage: "",
-    money: 0,
-    category: "",
-    menuCategoryId: 0,
-    restrictions: [] as number[],
-    menuFilterIds: [] as number[],
-    ingredients: [] as number[],
-    ingredientIds: [] as number[],
-    restaurantId: 1,
-  };
 
   const handleSubmit = async (values: typeof initialValues) => {
     try {
@@ -54,8 +42,8 @@ const AddToMenu = () => {
         description: values.description,
         money: values.money,
         restaurantId: values.restaurantId,
-        menuCategoryId: values.menuCategoryId,
-        menuFilterIds: values.menuFilterIds,
+        menuCategoryId: values.category,
+        menuFilterIds: values.restrictions,
         ingredientIds: values.ingredients,
       };
 
