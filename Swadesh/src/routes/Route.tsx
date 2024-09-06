@@ -17,7 +17,7 @@ const RoutesComponent = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path = "/" element = {<LoginPage />} />
+        <Route path="/" element={<LoginPage />} />
         <Route path="/SignUp" element={<SignUp />} />
         <Route path="/otp-verification" element={<OtpVerificationPage onSubmit={function (otp: string): void {
                   throw new Error('Function not implemented.');

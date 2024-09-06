@@ -13,13 +13,19 @@ interface Restaurant {
 
 const Navbar = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null); // Store restaurant data here
 
   const navRef = useRef();
+  const profileRef = useRef();
 
   // Function to toggle the navbar
   const toggleNavBar = () => {
     setIsNavOpen(!isNavOpen);
+  };
+
+  const toggleProfile = () => {
+    setIsProfileOpen(!isProfileOpen);
   };
 
   // Fetch restaurant data on component mount
@@ -71,6 +77,7 @@ const Navbar = () => {
           <Avatar
             sx={{ bgcolor: "#446732", width: 25, height: 25, fontSize: "10px" }}
             aria-label="recipe"
+            onClick={toggleProfile}
           /> {/* Avatar icon remains as the circular icon */}
         </Box>
 
@@ -162,6 +169,65 @@ const Navbar = () => {
             </Box>
           </Box>
         </nav>
+
+        <Box
+          ref={profileRef}
+          style={{
+            zIndex: 2,
+            position: "fixed",
+            top: "0",
+            right: "0",
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+            backgroundColor: "honeydew",
+            transition: "transform 0.9s ease",
+            transform: isProfileOpen ? "translateX(0)" : "translateX(100%)",
+          }}
+        >
+          <CloseIcon
+            className="closeButton"
+            sx={{
+              color: "#446732",
+              cursor: "pointer",
+              position: "absolute",
+              top: "1rem",
+              right: "1rem",
+            }}
+            onClick={toggleProfile}
+          />
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              color: "black",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Box
+                sx={{
+                  width: "150px",
+                  height: "150px",
+                  backgroundColor: "#446732",
+                }}
+              ></Box>
+              <Box>Your QR code</Box>
+            </Box>
+            <Box>Restaraunt Name:Thaal Kitchen</Box>
+            <Box>address:Thaal Kitchen</Box>
+            <Box>Status:Kitchen</Box>
+          </Box>
+        </Box>
       </Box>
     </>
   );
