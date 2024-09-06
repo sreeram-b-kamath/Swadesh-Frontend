@@ -9,20 +9,21 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import Resizer from "react-image-file-resizer";
 import React, { useEffect, useState } from "react";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import restrictionsData from "./Restrictions.json";
-import { Ingredients } from "../../Store/AddToMenu/AddToMenuStore";
-
-import { Category, Restriction } from "../../Store/AddToMenu/AddToMenuStore";
+// import restrictionsData from "./Restrictions.json";
 import {
+  fetchRestriction,
   AddToMenuFormProps,
   initialValues,
+  Ingredients,
+  fetchIngredients,
+  Category,
+  Restriction,
+  fetchCategories,
 } from "../../Store/AddToMenu/AddToMenuStore";
-import { fetchCategories } from "../../Store/AddToMenu/AddToMenuStore";
-import { fetchIngredients } from "../../Store/AddToMenu/AddToMenuStore";
-import Resizer from "react-image-file-resizer";
 
 const resizeFile = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -66,6 +67,7 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
 }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [ingredients, setIngredients] = useState<Ingredients[]>([]);
+  const [restrictions, setRestrictions] = useState<Restriction[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -75,8 +77,13 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
         const categoriesData = await fetchCategories(
           initialValues.restaurantId
         );
+        const restrictionsData = await fetchRestriction(
+          initialValues.restaurantId
+        );
         const ingredientsData = await fetchIngredients();
+
         setCategories(categoriesData);
+        setRestrictions(restrictionsData);
         setIngredients(ingredientsData);
         setLoading(false);
       } catch (error) {
@@ -318,15 +325,14 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                           (selected as number[])
                             .map(
                               (id) =>
-                                restrictionsData.find((r) => r.id === id)
-                                  ?.restriction
+                                restrictions.find((r) => r.id === id)?.name
                             )
                             .join(", ")
                         }
                       >
-                        {restrictionsData.map((restriction: Restriction) => (
+                        {restrictions.map((restriction: Restriction) => (
                           <MenuItem key={restriction.id} value={restriction.id}>
-                            {restriction.restriction}
+                            {restriction.name}
                           </MenuItem>
                         ))}
                       </Select>

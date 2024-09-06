@@ -19,7 +19,7 @@ export interface Category {
 
 export interface Restriction {
   id: number;
-  restriction: string;
+  name: string;
 }
 
 export interface AddToMenuFormProps {
@@ -52,12 +52,24 @@ const MenuURL = "https://localhost:7107/api/MenuItems";
 
 const IngredientURL = "https://localhost:7107/api/Ingredients";
 
+const RestrictionURL = "https://localhost:7107/api/Restriction";
+
 export const fetchCategories = async (restarauntId: number) => {
   try {
     const response = await axios.get(`${CategoryURL}/${restarauntId}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching categories", error);
+    throw error;
+  }
+};
+
+export const fetchRestriction = async (restarauntId: number) => {
+  try {
+    const response = await axios.get(`${RestrictionURL}/${restarauntId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching restriction", error);
     throw error;
   }
 };
