@@ -14,7 +14,6 @@ import {
   FormControl,
   Grid,
   InputLabel,
-  Snackbar,
   MenuItem,
   Select,
 } from "@mui/material";
@@ -153,7 +152,7 @@ export default function RecipeReviewCard() {
               <InputLabel
                 id="category-label"
                 sx={{
-                  zIndex:-1,
+                  zIndex: -1,
                   position: "absolute",
                   top: "-7px",
                   left: "0px",

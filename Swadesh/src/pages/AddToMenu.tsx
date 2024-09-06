@@ -1,16 +1,18 @@
 import { Box } from "@mui/material";
 import DishCard from "../components/AddToMenu/DishCard";
-import Navbar from "../components/AddToMenu/navbar";
+import Navbar from "../components/AddToMenu/Navbar";
 import { AddButton } from "../components/AddToMenu/AddButton";
 import { useState } from "react";
 import { AddToMenuForm } from "../components/AddToMenu/AddToMenuForm";
 import AddOptionsModal from "../components/AddToMenu/AddOptionsModal";
 import axios from "axios";
 import { initialValues } from "../Store/AddToMenu/AddToMenuStore";
+import { useNavigate } from "react-router-dom";
 
 const AddToMenu = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleAddClick = () => {
     setModalOpen(true);
@@ -22,6 +24,10 @@ const AddToMenu = () => {
   const handleOptionSelect = (option: string) => {
     if (option === "addItemToMenu") {
       setShowForm(true);
+    } else if (option === "addRestrictions") {
+      navigate("/restrictions");
+    } else if (option === "addCategories") {
+      navigate("/Categories");
     } else {
       setShowForm(false);
     }

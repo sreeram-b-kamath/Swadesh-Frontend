@@ -1,14 +1,25 @@
 import { Avatar, Box, Link } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { SiCodechef } from "react-icons/si";
 import CloseIcon from "@mui/icons-material/Close";
-import { useRef, useState } from "react";
-const navbar = () => {
+import { useRef, useState, useEffect } from "react";
+import axios from "axios"; 
+
+const restaurantId = 1;  
+
+interface Restaurant {
+  name: string;
+  logo: string;
+}
+
+const Navbar = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(null); // Store restaurant data here
 
   const navRef = useRef();
   const profileRef = useRef();
+
+  // Function to toggle the navbar
   const toggleNavBar = () => {
     setIsNavOpen(!isNavOpen);
   };
@@ -16,6 +27,20 @@ const navbar = () => {
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);
   };
+
+  // Fetch restaurant data on component mount
+  useEffect(() => {
+    const fetchRestaurantData = async () => {
+      try {
+        const response = await axios.get(`https://localhost:7107/api/Restaurant/${restaurantId}`);
+        setRestaurant(response.data); 
+      } catch (error) {
+        console.error("Error fetching restaurant data", error);
+      }
+    };
+    fetchRestaurantData();
+  }, []);
+
   return (
     <>
       <Box
@@ -33,19 +58,27 @@ const navbar = () => {
           sx={{ color: "#446732", cursor: "pointer" }}
           onClick={toggleNavBar}
         />
+
         <Box
           className="restarauntName"
-          sx={{ display: "flex", color: "#446732", fontWeight: "bold" }}
+          sx={{ display: "flex", color: "#446732", fontWeight: "bold", alignItems: "center" }}
         >
-          <SiCodechef fontSize="25" />
-          Thaal Kitchen
+          {restaurant && (
+            <img 
+              src={restaurant.logo} 
+              alt={`${restaurant.name} logo`} 
+              style={{ width: 40, height: 40, borderRadius: "50%", marginRight: "10px" }}
+            />
+          )}
+          {restaurant ? restaurant.name : "Loading..."} {/* Display restaurant name */}
         </Box>
+
         <Box>
           <Avatar
             sx={{ bgcolor: "#446732", width: 25, height: 25, fontSize: "10px" }}
             aria-label="recipe"
             onClick={toggleProfile}
-          ></Avatar>
+          /> {/* Avatar icon remains as the circular icon */}
         </Box>
 
         <nav
@@ -200,4 +233,4 @@ const navbar = () => {
   );
 };
 
-export default navbar;
+export default Navbar;
