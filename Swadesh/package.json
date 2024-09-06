@@ -14,7 +14,7 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
-    "axios": "^1.7.5",
+    "axios": "^1.7.6",
     "formik": "^2.4.6",
     "mui-one-time-password-input": "^2.0.3",
     "react": "^18.3.1",
