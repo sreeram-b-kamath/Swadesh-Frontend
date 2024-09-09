@@ -1,17 +1,28 @@
-import { Box } from "@mui/material";
-import DishCard from "../components/AddToMenu/DishCard";
-import Navbar from "../components/AddToMenu/Navbar";
-import { AddButton } from "../components/AddToMenu/AddButton";
-import { useState } from "react";
-import { AddToMenuForm } from "../components/AddToMenu/AddToMenuForm";
-import AddOptionsModal from "../components/AddToMenu/AddOptionsModal";
-import axios from "axios";
+import { Alert, Box } from "@mui/material";
+import { lazy, Suspense, useState } from "react";
 import { initialValues } from "../Store/AddToMenu/AddToMenuStore";
 import { useNavigate } from "react-router-dom";
+import { postMenuItem } from "../Store/AddToMenu/AddToMenuStore";
+import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
+import React from "react";
+const DishCard = lazy(() => import("../components/AddToMenu/DishCard"));
+const AddButton = lazy(() => import("../components/AddToMenu/AddButton"));
+const Navbar = lazy(() => import("../components/AddToMenu/Navbar"));
+const AddToMenuForm = lazy(
+  () => import("../components/AddToMenu/AddToMenuForm")
+);
+const AddOptionsModal = lazy(
+  () => import("../components/AddToMenu/AddOptionsModal")
+);
 
 const AddToMenu = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [successSnackbarOpen, setSuccessSnackbarOpen] =
+    useState<boolean>(false);
+  const [failureSnackbarOpen, setFailureSnackbarOpen] =
+    useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
   const navigate = useNavigate();
 
   const handleAddClick = () => {
@@ -40,32 +51,27 @@ const AddToMenu = () => {
 
   const handleSubmit = async (values: typeof initialValues) => {
     try {
-      console.log("Menu item entered:");
-
-      const dataToPost = {
-        name: values.name,
-        primaryImage: values.primaryImage,
-        description: values.description,
-        money: values.money,
-        restaurantId: values.restaurantId,
-        menuCategoryId: values.category,
-        menuFilterIds: values.restrictions,
-        ingredientIds: values.ingredients,
-      };
-
-      const response = await axios.post(
-        "https://localhost:7107/api/MenuItems/PostToMenuAsync",
-        dataToPost
-      );
-
-      console.log("Data posted successfully", response.data);
-      alert("Added to your menu Succesfully");
+      const response = await postMenuItem(values);
+      console.log("Data posted successfully", response);
+      setSnackbarMessage("Added to your menu successfully");
+      setSuccessSnackbarOpen(true);
       setShowForm(false);
     } catch (error) {
       console.error("Error posting data", error);
+      setSnackbarMessage("Failed to add item to menu");
+      setFailureSnackbarOpen(true);
     }
   };
-
+  const handleSnackbarClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSuccessSnackbarOpen(false);
+    setFailureSnackbarOpen(false);
+  };
   return (
     <>
       <Box
@@ -76,69 +82,68 @@ const AddToMenu = () => {
           padding: "1rem 1rem",
         }}
       >
-        <Navbar />
+        <Suspense fallback={<div>Loading NavBar...</div>}>
+          <Navbar />
+        </Suspense>
         {showForm ? (
           <Box>
-            <AddToMenuForm onSubmit={handleSubmit} onCancel={handleCancel} />
-            {/* <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                gap: "50px",
-              }}
-            >
-              <Button
-                onClick={handleCancel}
-                variant="contained"
-                color="primary"
-                type="submit"
-                sx={{
-                  marginTop: "30px",
-                  color: "white",
-                  fontSize: "9px",
-                  backgroundColor: "#446732",
-                  "&:active": { backgroundcolor: "honeydew" },
-                  width: "130px",
-                }}
-              >
-                Go back to menu
-              </Button>
-              <Button
-                onClick={handleSubmit}
-                variant="contained"
-                color="primary"
-                type="submit"
-                sx={{
-                  marginTop: "30px",
-                  color: "white",
-                  fontSize: "9px",
-                  backgroundColor: "#446732",
-                  "&.hover": { backgroundcolor: "honeydew" },
-                  width: "130px",
-                }}
-              >
-                Add to menu
-              </Button>
-            </Box> */}
+            <Suspense fallback={<div>Loading Form...</div>}>
+              <AddToMenuForm onSubmit={handleSubmit} onCancel={handleCancel} />
+            </Suspense>
           </Box>
         ) : (
           <Box>
-            <DishCard />
+            <Suspense fallback={<div>Loading Dish Card...</div>}>
+              <h2>Preview</h2>
+              <DishCard />
+            </Suspense>
           </Box>
         )}
         {!showForm && (
           <Box>
-            <AddButton onClick={handleAddClick} />
+            <Suspense fallback={<div>Loading Button...</div>}>
+              <AddButton onClick={handleAddClick} />
+            </Suspense>
           </Box>
         )}
         ;
-        <AddOptionsModal
-          open={modalOpen}
-          handleClose={handleModalClose}
-          handleOptionSelect={handleOptionSelect}
-        />
+        <Suspense fallback={<div>Loading Button...</div>}>
+          <AddOptionsModal
+            open={modalOpen}
+            handleClose={handleModalClose}
+            handleOptionSelect={handleOptionSelect}
+          />
+        </Suspense>
       </Box>
+      <Snackbar
+        open={successSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={failureSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

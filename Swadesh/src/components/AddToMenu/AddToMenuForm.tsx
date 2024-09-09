@@ -13,7 +13,6 @@ import Resizer from "react-image-file-resizer";
 import React, { useEffect, useState } from "react";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-// import restrictionsData from "./Restrictions.json";
 import {
   fetchRestriction,
   AddToMenuFormProps,
@@ -46,22 +45,38 @@ const resizeFile = (file: File): Promise<string> =>
   });
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Dish Name is required"),
-  description: Yup.string().required("Description is required"),
+  name: Yup.string()
+    .required("Dish Name is required")
+    .min(3, "Dish Name must be at least 3 characters long")
+    .max(100, "Dish Name cannot be more than 100 characters long"),
+
+  description: Yup.string()
+    .required("Description is required")
+    .min(10, "Description must be at least 10 characters long")
+    .max(200, "Description cannot be more than 200 characters long"),
+
   money: Yup.number()
     .required("Price is required")
-    .positive("Price must be positive"),
+    .positive("Price must be positive")
+    .min(0.01, "Price must be at least 0.01"),
+
   category: Yup.string().required("Category is required"),
-  restrictions: Yup.array().of(
-    Yup.number().required("Restrictions are required")
-  ),
+
+  restrictions: Yup.array()
+    .of(Yup.number())
+    .min(1, "At least one restriction must be selected")
+    .required("Restrictions are required"),
+
   ingredients: Yup.array()
-    .of(Yup.number()) // Changed from string
-    .required("At least one ingredient is required"),
-  primaryImage: Yup.string().required("Image is required"),
+    .of(Yup.number())
+    .min(1, "At least one ingredient must be selected")
+    .max(3, "You can select a maximum of 3 ingredients")
+    .required("Ingredients are required"),
+
+  primaryImage: Yup.mixed().required("Image is required"),
 });
 
-export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
+const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
   onSubmit,
   onCancel,
 }) => {
@@ -70,6 +85,7 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
   const [restrictions, setRestrictions] = useState<Restriction[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [fileName, setFileName] = useState("Upload Image");
 
   useEffect(() => {
     const fetchDataForDropdown = async () => {
@@ -101,7 +117,7 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          console.log("Submitting form values:", values); // Debug log
+          console.log("Submitting form values:", values);
           onSubmit(values);
         }}
       >
@@ -278,11 +294,20 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                           ))
                         )}
                       </Select>
-                      <ErrorMessage
-                        name="category"
-                        component="div"
-                        className="error-message"
-                      />
+                      <Typography
+                        sx={{
+                          color: "#d10000",
+                          fontSize: "9px",
+                          marginTop: "4px",
+                          marginLeft: "14px",
+                        }}
+                      >
+                        <ErrorMessage
+                          name="category"
+                          component="div"
+                          className="error-message"
+                        />
+                      </Typography>
                     </FormControl>
                   </Grid>
                   {/* <-Restriction-> */}
@@ -336,11 +361,16 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                           </MenuItem>
                         ))}
                       </Select>
-                      <ErrorMessage
-                        name="restrictions"
-                        component="div"
-                        className="error-message"
-                      />
+                      <Typography
+                        sx={{
+                          color: "#d10000",
+                          fontSize: "9px",
+                          marginTop: "4px",
+                          marginLeft: "14px",
+                        }}
+                      >
+                        <ErrorMessage name="restrictions" />
+                      </Typography>
                     </FormControl>
                   </Grid>
                   {/* <-Main Ingredients-> */}
@@ -396,11 +426,16 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                           </MenuItem>
                         ))}
                       </Select>
-                      <ErrorMessage
-                        name="ingredients"
-                        component="div"
-                        className="error-message"
-                      />
+                      <Typography
+                        sx={{
+                          color: "#d10000",
+                          fontSize: "9px",
+                          marginTop: "4px",
+                          marginLeft: "14px",
+                        }}
+                      >
+                        <ErrorMessage name="ingredients" />
+                      </Typography>
                     </FormControl>
                   </Grid>
                   {/* <-Dish's Image-> */}
@@ -412,7 +447,7 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                         marginBottom: "4px",
                       }}
                     >
-                      Upload Dish's image
+                      {fileName}{" "}
                     </Typography>
                     <Button
                       sx={{
@@ -423,10 +458,13 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                           backgroundColor: "#446732",
                           color: "white",
                         },
+                        "&:focus": {
+                          backgroundColor: "#446732",
+                          color: "white",
+                        },
                       }}
                       variant="contained"
                       component="label"
-                      color="primary"
                       fullWidth
                     >
                       Upload Image
@@ -440,6 +478,7 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                             try {
                               const resizedImage = await resizeFile(file);
                               setFieldValue("primaryImage", resizedImage);
+                              setFileName(file.name);
                             } catch (error) {
                               setFieldError(
                                 "primaryImage",
@@ -450,6 +489,18 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                         }}
                       />
                     </Button>
+                    {errors.primaryImage && touched.primaryImage && (
+                      <Typography
+                        sx={{
+                          color: "#d10000",
+                          fontSize: "9px",
+                          marginTop: "4px",
+                          marginLeft: "14px",
+                        }}
+                      >
+                        {errors.primaryImage}
+                      </Typography>
+                    )}
                   </Grid>
                 </Grid>
               </FormControl>
@@ -472,7 +523,7 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                   fontSize: "9px",
                   backgroundColor: "#446732",
                   "&:active": { backgroundcolor: "honeydew" },
-                  width: "130px",
+                  width: "140px",
                 }}
               >
                 Go back to menu
@@ -498,3 +549,4 @@ export const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
     </>
   );
 };
+export default AddToMenuForm;
