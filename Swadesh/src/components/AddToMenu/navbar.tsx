@@ -1,6 +1,7 @@
 import { Avatar, Box, Link } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import QRCode from 'react-qr-code';
 import { useRef, useState, useEffect } from "react";
 import axios from "axios"; 
 
@@ -16,7 +17,7 @@ const Navbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null); // Store restaurant data here
 
-  const navRef = useRef();
+  const navRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef();
 
   // Function to toggle the navbar
@@ -40,7 +41,6 @@ const Navbar = () => {
     };
     fetchRestaurantData();
   }, []);
-
   return (
     <>
       <Box
@@ -78,7 +78,8 @@ const Navbar = () => {
             sx={{ bgcolor: "#446732", width: 25, height: 25, fontSize: "10px" }}
             aria-label="recipe"
             onClick={toggleProfile}
-          /> {/* Avatar icon remains as the circular icon */}
+          ></Avatar>
+          /> 
         </Box>
 
         <nav
@@ -220,7 +221,14 @@ const Navbar = () => {
                   height: "150px",
                   backgroundColor: "#446732",
                 }}
-              ></Box>
+              >
+                <QRCode
+                        value={"http://192.168.221.87:5173/preference-selection"}
+                        bgColor={"#FFFFFF"}
+                        fgColor={"#000000"}
+                        size={128}
+                    />
+              </Box>
               <Box>Your QR code</Box>
             </Box>
             <Box>Restaraunt Name:Thaal Kitchen</Box>
