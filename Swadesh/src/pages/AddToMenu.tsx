@@ -82,7 +82,7 @@ const AddToMenu = () => {
           padding: "1rem 1rem",
         }}
       >
-        <Suspense fallback={<div>Loading NavBar...</div>}>
+        <Suspense fallback={<div>Loading NavBar....</div>}>
           <Navbar />
         </Suspense>
         {showForm ? (
