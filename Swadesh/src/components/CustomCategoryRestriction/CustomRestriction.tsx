@@ -16,7 +16,7 @@ import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
 
 const defaultRestrictions = ["Vegan", "Gluten-Free", "Nut-Free"];
-const restaurantId = 1;
+const restaurantId = 2;
 
 interface Restriction {
   id: number;

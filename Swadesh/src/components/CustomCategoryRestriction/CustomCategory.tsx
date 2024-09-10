@@ -16,7 +16,7 @@ import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
 
 const defaultCategories = ["Appetizers", "Main Course", "Dessert"];
-const restaurantId = 1;
+const restaurantId = 2;
 
 interface Category {
   id: number;

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { postMenuItem } from "../Store/AddToMenu/AddToMenuStore";
 import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
 import React from "react";
+import { useLoginStore } from "../Store/useLoginStore";
 const DishCard = lazy(() => import("../components/AddToMenu/DishCard"));
 const AddButton = lazy(() => import("../components/AddToMenu/AddButton"));
 const Navbar = lazy(() => import("../components/AddToMenu/Navbar"));
@@ -24,6 +25,9 @@ const AddToMenu = () => {
     useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
   const navigate = useNavigate();
+  const { restaurantId } = useLoginStore((state) => ({
+    restaurantId: state.restaurantId,
+  }));
 
   const handleAddClick = () => {
     setModalOpen(true);
@@ -50,8 +54,13 @@ const AddToMenu = () => {
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
+    if (restaurantId === null) {
+      setSnackbarMessage("Restaurant ID is not available");
+      setFailureSnackbarOpen(true);
+      return;
+    }
     try {
-      const response = await postMenuItem(values);
+      const response = await postMenuItem(values, restaurantId);
       console.log("Data posted successfully", response);
       setSnackbarMessage("Added to your menu successfully");
       setSuccessSnackbarOpen(true);
@@ -77,7 +86,7 @@ const AddToMenu = () => {
       <Box
         sx={{
           minHeight: "100vh",
-          width: "96vw",
+          width: "100vw",
           backgroundColor: "#f5fffa",
           padding: "1rem 1rem",
         }}

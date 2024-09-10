@@ -8,7 +8,7 @@ export interface MenuItems {
   menuFilterIds: number[];
   ingredientIds: number[];
   menuCategoryId: number;
-  restarauntId: number;
+  restaurantId: number;
   image: string | null;
 }
 
@@ -43,7 +43,7 @@ export const initialValues = {
   menuFilterIds: [] as number[],
   ingredients: [] as number[],
   ingredientIds: [] as number[],
-  restaurantId: 1,
+  restaurantId: null as number | null,
 };
 
 const CategoryURL = "https://localhost:7107/api/Category";
@@ -54,9 +54,9 @@ const IngredientURL = "https://localhost:7107/api/Ingredients";
 
 const RestrictionURL = "https://localhost:7107/api/Restriction";
 
-export const fetchCategories = async (restarauntId: number) => {
+export const fetchCategories = async (restaurantId: number) => {
   try {
-    const response = await axios.get(`${CategoryURL}/${restarauntId}`);
+    const response = await axios.get(`${CategoryURL}/${restaurantId}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching categories", error);
@@ -64,9 +64,9 @@ export const fetchCategories = async (restarauntId: number) => {
   }
 };
 
-export const fetchRestriction = async (restarauntId: number) => {
+export const fetchRestriction = async (restaurantId: number) => {
   try {
-    const response = await axios.get(`${RestrictionURL}/${restarauntId}`);
+    const response = await axios.get(`${RestrictionURL}/${restaurantId}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching restriction", error);
@@ -74,10 +74,10 @@ export const fetchRestriction = async (restarauntId: number) => {
   }
 };
 
-export const fetchMenuItems = async (restarauntId: number) => {
+export const fetchMenuItems = async (restaurantId: number) => {
   try {
     const response = await axios.get(
-      `${MenuURL}/ByRestaraunt/${restarauntId} `
+      `${MenuURL}/ByRestaraunt/${restaurantId} `
     );
     return response.data;
   } catch (error) {
@@ -106,16 +106,18 @@ export const deleteMenuItems = async (menuItemId: number) => {
   }
 };
 
-export const postMenuItem = async (values: typeof initialValues) => {
+export const postMenuItem = async (
+  values: typeof initialValues,
+  restaurantId: number
+) => {
   try {
     console.log("Menu item entered:");
-
     const dataToPost = {
       name: values.name,
       primaryImage: values.primaryImage,
       description: values.description,
       money: values.money,
-      restaurantId: values.restaurantId,
+      restaurantId: restaurantId,
       menuCategoryId: values.category,
       menuFilterIds: values.restrictions,
       ingredientIds: values.ingredients,

@@ -1,11 +1,11 @@
 import { Avatar, Box, Link } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import QRCode from 'react-qr-code';
+import QRCode from "react-qr-code";
 import { useRef, useState, useEffect } from "react";
-import axios from "axios"; 
+import axios from "axios";
 
-const restaurantId = 1;  
+const restaurantId = 2;
 
 interface Restaurant {
   name: string;
@@ -33,8 +33,10 @@ const Navbar = () => {
   useEffect(() => {
     const fetchRestaurantData = async () => {
       try {
-        const response = await axios.get(`https://localhost:7107/api/Restaurant/${restaurantId}`);
-        setRestaurant(response.data); 
+        const response = await axios.get(
+          `https://localhost:7107/api/Restaurant/${restaurantId}`
+        );
+        setRestaurant(response.data);
       } catch (error) {
         console.error("Error fetching restaurant data", error);
       }
@@ -61,16 +63,27 @@ const Navbar = () => {
 
         <Box
           className="restarauntName"
-          sx={{ display: "flex", color: "#446732", fontWeight: "bold", alignItems: "center" }}
+          sx={{
+            display: "flex",
+            color: "#446732",
+            fontWeight: "bold",
+            alignItems: "center",
+          }}
         >
           {restaurant && (
-            <img 
-              src={restaurant.logo} 
-              alt={`${restaurant.name} logo`} 
-              style={{ width: 40, height: 40, borderRadius: "50%", marginRight: "10px" }}
+            <img
+              src={restaurant.logo}
+              alt={`${restaurant.name} logo`}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                marginRight: "10px",
+              }}
             />
           )}
-          {restaurant ? restaurant.name : "Loading..."} {/* Display restaurant name */}
+          {restaurant ? restaurant.name : "Loading..."}{" "}
+          {/* Display restaurant name */}
         </Box>
 
         <Box>
@@ -79,7 +92,6 @@ const Navbar = () => {
             aria-label="recipe"
             onClick={toggleProfile}
           ></Avatar>
-          /> 
         </Box>
 
         <nav
@@ -223,11 +235,11 @@ const Navbar = () => {
                 }}
               >
                 <QRCode
-                        value={"http://192.168.221.87:5173/preference-selection"}
-                        bgColor={"#FFFFFF"}
-                        fgColor={"#000000"}
-                        size={128}
-                    />
+                  value={"http://192.168.221.87:5173/preference-selection"}
+                  bgColor={"#FFFFFF"}
+                  fgColor={"#000000"}
+                  size={128}
+                />
               </Box>
               <Box>Your QR code</Box>
             </Box>
