@@ -12,6 +12,8 @@ import {
   Ingredients,
   fetchRestriction,
   Restriction,
+  Category,
+  fetchCategories,
 } from "../../Store/AddToMenu/AddToMenuStore";
 import {
   Alert,
@@ -41,6 +43,7 @@ export default function RecipeReviewCard() {
   const [deleteFailureOpen, setdeleteFailureOpen] = useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
   const { restaurantId } = useLoginStore();
   const validRestaurantId = restaurantId ?? -1;
 
@@ -80,9 +83,11 @@ export default function RecipeReviewCard() {
         const MenuItemsData = await fetchMenuItems(validRestaurantId);
         const IngredientsData = await fetchIngredients();
         const restrictionsData = await fetchRestriction(validRestaurantId);
+        const categoriesData = await fetchCategories(validRestaurantId);
         setRestrictions(restrictionsData);
         setMenuItems(MenuItemsData);
         setIngredient(IngredientsData);
+        setCategories(categoriesData);
       } catch (error) {
         console.error("Error fetching menu items", error);
       } finally {
@@ -116,6 +121,16 @@ export default function RecipeReviewCard() {
   const restrictionsMap = new Map(
     restrictions.map((restriction) => [restriction.id, restriction.name])
   );
+  const categoriesMap = new Map(
+    categories.map((category) => [category.id, category.name])
+  );
+
+  const groupedMenuItems = filteredData.reduce((acc: any, item: MenuItems) => {
+    const category = categoriesMap.get(item.menuCategoryId) || "Uncategorized";
+    if (!acc[category]) acc[category] = [];
+    acc[category].push(item);
+    return acc;
+  }, {});
 
   return (
     <>
@@ -219,103 +234,119 @@ export default function RecipeReviewCard() {
               </Select>
             </FormControl>
           </Box>
-
-          <Grid container spacing={1}>
-            {filteredData.map((result, index) => (
-              <Grid
-                item
-                key={index}
-                xs={6}
-                sm={4}
-                md={4}
-                lg={2}
-                display="flex"
-                justifyContent="space-around"
+          {Object.keys(groupedMenuItems).map((category) => (
+            <div key={category}>
+              <Typography
+                sx={{ color: "#446732", fontWeight: "bold" }}
               >
-                <Card
-                  key={index}
-                  sx={{
-                    width: 120,
-                    height: 170,
-                    backgroundColor: "honeydew",
-                    m: 1,
-                  }}
-                >
-                  <CardMedia
-                    component="img"
-                    height="100"
-                    image={result.primaryImage}
-                    alt="Dish image"
-                  />
-                  <CardContent
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      padding: 1,
-                      height: "25%",
-                    }}
-                  >
-                    <Box className="dish">
-                      <Typography
-                        color="text.primary"
-                        sx={{ fontSize: "10px" }}
-                      >
-                        {result.name}
-                      </Typography>
-                    </Box>
-                    <Box className="price">
-                      <Typography sx={{ color: "black", fontSize: "10px" }}>
-                        ₹{result.money}
-                      </Typography>
-                    </Box>
-                    <Box className="bottomRow">
-                      <Box
+                {category}
+              </Typography>
+
+              <Grid container spacing={1}>
+                {filteredData
+                  .filter(
+                    (item) => categoriesMap.get(item.menuCategoryId) == category
+                  )
+                  .map((result, index) => (
+                    <Grid
+                      item
+                      key={index}
+                      xs={6}
+                      sm={4}
+                      md={4}
+                      lg={2}
+                      display="flex"
+                      justifyContent="space-around"
+                    >
+                      <Card
+                        key={index}
                         sx={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          flexWrap: "wrap",
+                          width: 120,
+                          height: 170,
+                          backgroundColor: "honeydew",
+                          m: 1,
                         }}
                       >
-                        <Box
-                          className="ingredienceIcons"
+                        <CardMedia
+                          component="img"
+                          height="100"
+                          image={result.primaryImage}
+                          alt="Dish image"
+                        />
+                        <CardContent
                           sx={{
                             display: "flex",
-                            flexDirection: "row",
-                            flexWrap: "wrap",
+                            flexDirection: "column",
+                            padding: 1,
+                            height: "25%",
                           }}
                         >
-                          {getIngredientsImages(result.ingredientIds).map(
-                            (image, imgIndex) => (
-                              <img
-                                key={imgIndex}
-                                src={image}
-                                alt="Ingredient"
-                                style={{
-                                  width: 15,
-                                  height: 15,
-                                  marginRight: 3,
-                                  paddingTop: 5,
+                          <Box className="dish">
+                            <Typography
+                              color="text.primary"
+                              sx={{ fontSize: "10px" }}
+                            >
+                              {result.name}
+                            </Typography>
+                          </Box>
+                          <Box className="price">
+                            <Typography
+                              sx={{ color: "black", fontSize: "10px" }}
+                            >
+                              ₹{result.money}
+                            </Typography>
+                          </Box>
+                          <Box className="bottomRow">
+                            <Box
+                              sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                flexWrap: "wrap",
+                              }}
+                            >
+                              <Box
+                                className="ingredienceIcons"
+                                sx={{
+                                  display: "flex",
+                                  flexDirection: "row",
+                                  flexWrap: "wrap",
                                 }}
+                              >
+                                {getIngredientsImages(result.ingredientIds).map(
+                                  (image, imgIndex) => (
+                                    <img
+                                      key={imgIndex}
+                                      src={image}
+                                      alt="Ingredient"
+                                      style={{
+                                        width: 15,
+                                        height: 15,
+                                        marginRight: 3,
+                                        paddingTop: 5,
+                                      }}
+                                    />
+                                  )
+                                )}
+                              </Box>
+                              <DeleteIcon
+                                sx={{
+                                  fontSize: "19px",
+                                  color: "brown",
+                                  marginTop: "3px",
+                                }}
+                                onClick={() => handleDeleteClick(result.id)}
                               />
-                            )
-                          )}
-                        </Box>
-                        <DeleteIcon
-                          sx={{
-                            fontSize: "19px",
-                            color: "brown",
-                            marginTop: "3px",
-                          }}
-                          onClick={() => handleDeleteClick(result.id)}
-                        />
-                      </Box>
-                    </Box>
-                  </CardContent>
-                </Card>
+                            </Box>
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
               </Grid>
-            ))}
-          </Grid>
+            </div>
+          ))}
+          ;
         </>
       )}{" "}
       <Snackbar
