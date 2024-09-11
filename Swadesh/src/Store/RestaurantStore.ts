@@ -18,17 +18,17 @@ interface RestaurantState {
   restaurant: Restaurant | null;
   loading: boolean;
   error: string | null;
-  fetchRestaurant: () => void;
+  fetchRestaurant: (restaurantId:string) => void;
 }
 
 const useRestaurantStore = create<RestaurantState>((set) => ({
   restaurant: null,
   loading: false,
   error: null,
-  fetchRestaurant: async () => {
+  fetchRestaurant: async (restaurantId) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.get<Restaurant>('https://localhost:7107/api/Restaurant/4');
+      const response = await axios.get<Restaurant>(`https://localhost:7107/api/Restaurant/${restaurantId}`);
         set({ restaurant: response.data , loading: false});
       
     } catch (error: any) {
