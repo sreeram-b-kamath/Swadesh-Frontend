@@ -3,7 +3,7 @@ import AddIcon from "@mui/icons-material/Add";
 interface AddButtonProps {
   onClick: () => void;
 }
-export const AddButton: React.FC<AddButtonProps> = ({ onClick }) => {
+const AddButton: React.FC<AddButtonProps> = ({ onClick }) => {
   return (
     <Button
       sx={{
@@ -23,3 +23,4 @@ export const AddButton: React.FC<AddButtonProps> = ({ onClick }) => {
     </Button>
   );
 };
+export default AddButton;
