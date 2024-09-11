@@ -40,9 +40,10 @@ const Menu: React.FC<MenuProps> = ({ id, primaryImage, rating, name, money, desc
     <div className={styles.menucontainer} onClick={openModal}>
       <img src={primaryImage} width={130}  alt={name} />
       <h2 className={styles.truncated}>{name}</h2>
-      <h4>₹ {money}</h4>
       <div className={styles.fav}>
-        <h3>{rating}</h3>
+        {/* <h3>{rating}</h3> */}
+      <h4>₹ {money}</h4>
+
         <img
           src={isFavorited ? filled : outlined}
           alt="Favorite"
