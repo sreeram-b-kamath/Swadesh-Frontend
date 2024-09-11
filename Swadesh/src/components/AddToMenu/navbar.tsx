@@ -1,15 +1,48 @@
 import { Avatar, Box, Link } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { SiCodechef } from "react-icons/si";
 import CloseIcon from "@mui/icons-material/Close";
-import { useRef, useState } from "react";
-const navbar = () => {
-  const [isNavOpen, setIsNavOpen] = useState(false);
+import QRCode from "react-qr-code";
+import { useRef, useState, useEffect } from "react";
+import axios from "axios";
+import { useLoginStore } from "../../Store/useLoginStore";
 
-  const navRef = useRef();
+interface Restaurant {
+  name: string;
+  logo: string;
+}
+
+const Navbar = () => {
+  const [isNavOpen, setIsNavOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(null); // Store restaurant data here
+
+  const navRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef();
+  const { restaurantId } = useLoginStore();
+
+  // Function to toggle the navbar
   const toggleNavBar = () => {
     setIsNavOpen(!isNavOpen);
   };
+
+  const toggleProfile = () => {
+    setIsProfileOpen(!isProfileOpen);
+  };
+
+  // Fetch restaurant data on component mount
+  useEffect(() => {
+    const fetchRestaurantData = async () => {
+      try {
+        const response = await axios.get(
+          `https://localhost:7107/api/Restaurant/${restaurantId}`
+        );
+        setRestaurant(response.data);
+      } catch (error) {
+        console.error("Error fetching restaurant data", error);
+      }
+    };
+    fetchRestaurantData();
+  }, []);
   return (
     <>
       <Box
@@ -27,17 +60,37 @@ const navbar = () => {
           sx={{ color: "#446732", cursor: "pointer" }}
           onClick={toggleNavBar}
         />
+
         <Box
           className="restarauntName"
-          sx={{ display: "flex", color: "#446732", fontWeight: "bold" }}
+          sx={{
+            display: "flex",
+            color: "#446732",
+            fontWeight: "bold",
+            alignItems: "center",
+          }}
         >
-          <SiCodechef fontSize="25" />
-          Thaal Kitchen
+          {restaurant && (
+            <img
+              src={restaurant.logo}
+              alt={`${restaurant.name} logo`}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                marginRight: "10px",
+              }}
+            />
+          )}
+          {restaurant ? restaurant.name : "Loading..."}{" "}
+          {/* Display restaurant name */}
         </Box>
+
         <Box>
           <Avatar
             sx={{ bgcolor: "#446732", width: 25, height: 25, fontSize: "10px" }}
             aria-label="recipe"
+            onClick={toggleProfile}
           ></Avatar>
         </Box>
 
@@ -129,9 +182,75 @@ const navbar = () => {
             </Box>
           </Box>
         </nav>
+
+        <Box
+          ref={profileRef}
+          style={{
+            zIndex: 2,
+            position: "fixed",
+            top: "0",
+            right: "0",
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+            backgroundColor: "honeydew",
+            transition: "transform 0.9s ease",
+            transform: isProfileOpen ? "translateX(0)" : "translateX(100%)",
+          }}
+        >
+          <CloseIcon
+            className="closeButton"
+            sx={{
+              color: "#446732",
+              cursor: "pointer",
+              position: "absolute",
+              top: "1rem",
+              right: "1rem",
+            }}
+            onClick={toggleProfile}
+          />
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              color: "black",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Box
+                sx={{
+                  width: "150px",
+                  height: "150px",
+                  backgroundColor: "#446732",
+                }}
+              >
+                <QRCode
+                  value={"http://192.168.221.87:5173/preference-selection"}
+                  bgColor={"#FFFFFF"}
+                  fgColor={"#000000"}
+                  size={128}
+                />
+              </Box>
+              <Box>Your QR code</Box>
+            </Box>
+            <Box>Restaraunt Name:Thaal Kitchen</Box>
+            <Box>address:Thaal Kitchen</Box>
+            <Box>Status:Kitchen</Box>
+          </Box>
+        </Box>
       </Box>
     </>
   );
 };
 
-export default navbar;
+export default Navbar;

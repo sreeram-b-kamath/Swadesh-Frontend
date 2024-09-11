@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Button, TextField, CircularProgress, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import { useLoginStore } from '../../Store/useLoginStore'; // Adjust the import path as needed
+import { useNavigate } from "react-router-dom";
+import { useLoginStore } from '../../Store/useLoginStore';
 
 const Login = () => {
-  const navigate = useNavigate(); // Initialize navigate
-  const { loginUser, loginLoading, loginError, loginSuccess } = useLoginStore(); // Now correctly typed
+  const navigate = useNavigate();
+  const { loginUser, loginLoading, loginError, loginSuccess, userRole } = useLoginStore();
+
+  useEffect(() => {
+    if (loginSuccess) {
+      if (userRole === 1) {
+        navigate('/add-to-menu');
+      } else if (userRole === 0) {
+        navigate('/menu');
+      }
+    }
+  }, [loginSuccess, userRole, navigate]);
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -25,10 +35,8 @@ const Login = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      const success = await loginUser(values.email, values.password); // Call the loginUser action from the store
-      if (success) {
-        navigate('/add-to-menu'); // Navigate to the dashboard or another page upon success
-      }
+      // Login and handle redirect based on role
+      await loginUser(values.email, values.password);
     },
   });
 
