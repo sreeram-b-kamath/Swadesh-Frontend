@@ -4,8 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import QRCode from "react-qr-code";
 import { useRef, useState, useEffect } from "react";
 import axios from "axios";
-
-const restaurantId = 2;
+import { useLoginStore } from "../../Store/useLoginStore";
 
 interface Restaurant {
   name: string;
@@ -19,6 +18,7 @@ const Navbar = () => {
 
   const navRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef();
+  const { restaurantId } = useLoginStore();
 
   // Function to toggle the navbar
   const toggleNavBar = () => {
