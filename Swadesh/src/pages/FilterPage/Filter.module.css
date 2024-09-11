@@ -38,7 +38,6 @@
   justify-items: center;
   gap: 8px;
 }
-
 .yesbutton {
   background-color: #006e1a;
   color: white;
@@ -59,9 +58,11 @@
   background-color: wheat; 
 } */
 
-.yesbutton .checkmark {
-  margin-right: 8px; /* Space between icon and text */
-}
+/* .yesbutton .checkmark {
+  margin-right: 8px; 
+} */
+
+
 
 .nobutton {
   background-color: #82db7d;
