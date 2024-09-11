@@ -7,6 +7,8 @@ import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
 import { useState, useEffect } from "react";
 import NodataGif from "../../assets/pan-unscreen.gif";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+
 import {
   MenuItems,
   Ingredients,
@@ -32,6 +34,7 @@ import {
 } from "../../Store/AddToMenu/AddToMenuStore";
 import React from "react";
 import { useLoginStore } from "../../Store/useLoginStore";
+import EditMenuModal from "./EditMenuModal";
 
 export default function RecipeReviewCard() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -47,9 +50,33 @@ export default function RecipeReviewCard() {
   const { restaurantId } = useLoginStore();
   const validRestaurantId = restaurantId ?? -1;
 
+  const [fetchTrigger, setFetchTrigger] = useState(false); 
+
+
+  const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
+  const [selectedMenuItemId, setSelectedMenuItemId] = useState<number | null>(
+    null
+  );
+
+
   const handleDeleteClick = (menuItemId: number) => {
     setDeleteItemId(menuItemId);
     setConfirmOpen(true);
+  };
+
+  const handleEdit = (itemId: number) => {
+    console.log("Editing menu item with ID:", itemId);
+    setSelectedMenuItemId(itemId); 
+    setEditModalOpen(true); 
+  };
+
+  const handleModalClose = () => {
+    setEditModalOpen(false); 
+    setSelectedMenuItemId(null); 
+    setFetchTrigger(prev => !prev);
+    
+
+  
   };
 
   const handleAlertClose = (
@@ -95,7 +122,7 @@ export default function RecipeReviewCard() {
       }
     };
     fetchData();
-  }, []);
+  }, [fetchTrigger]);
 
   const getIngredientsImages = (IngredientIds: number[]) => {
     return ingredient
@@ -329,15 +356,26 @@ export default function RecipeReviewCard() {
                                   )
                                 )}
                               </Box>
-                              <DeleteIcon
-                                sx={{
-                                  fontSize: "19px",
-                                  color: "brown",
-                                  marginTop: "3px",
-                                }}
-                                onClick={() => handleDeleteClick(result.id)}
-                              />
-                            </Box>
+                              <Box sx={{ display: "flex", flexDirection: "row" }}>
+                          <DeleteIcon
+                                  sx={{
+                                    fontSize: "19px",
+                                    color: "brown",
+                                    marginTop: "3px",
+                                  }}
+                                  onClick={() => handleDeleteClick(result.id)}
+                                />
+                                <ModeEditIcon
+                            sx={{
+                              fontSize: "19px",
+                              color: "green",
+                              marginTop: "3px",
+                              marginLeft: "5px",
+                            }}
+                            onClick={() => handleEdit(result.id)}
+                          />
+                        </Box>
+                      </Box>
                           </Box>
                         </CardContent>
                       </Card>
@@ -347,6 +385,14 @@ export default function RecipeReviewCard() {
             </div>
           ))}
           ;
+          {editModalOpen && (
+            <EditMenuModal
+            open={editModalOpen}
+            handleClose={handleModalClose}
+            menuItemId={selectedMenuItemId} 
+            restaurantId={validRestaurantId}
+          />
+          )}
         </>
       )}{" "}
       <Snackbar

@@ -18,7 +18,6 @@ const RoutesComponent = () => {
         <Route path="/SignUp" element={<SignUp />} />
         <Route path="/otp-verification" element={<OtpVerificationPage onSubmit={function (otp: string): void {
                   throw new Error('Function not implemented.');
-              } } />} />
         {/* Protect these routes based on the user's role */}
         <Route element={<PrivateRoute allowedRoles={[1]} />}>
           <Route path="/add-to-menu" element={<AddToMenu />} />
@@ -33,6 +32,7 @@ const RoutesComponent = () => {
         {/* Unprotected routes */}
         <Route path="/preference-selection" element={<Filter />} />
         <Route path="/menu" element={<MenuPage />} />
+        <Route path="/preference/:restaurantId" element={<Preference />} /> 
       </Routes>
     </BrowserRouter>
   );
