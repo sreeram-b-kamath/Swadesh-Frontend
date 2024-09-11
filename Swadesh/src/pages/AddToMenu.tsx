@@ -103,7 +103,6 @@ const AddToMenu = () => {
         ) : (
           <Box>
             <Suspense fallback={<div>Loading Dish Card...</div>}>
-              <h2>Preview</h2>
               <DishCard />
             </Suspense>
           </Box>
