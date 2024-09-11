@@ -23,6 +23,7 @@ import {
   Restriction,
   fetchCategories,
 } from "../../Store/AddToMenu/AddToMenuStore";
+import { useLoginStore } from "../../Store/useLoginStore";
 
 const resizeFile = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -86,16 +87,19 @@ const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [fileName, setFileName] = useState("Upload Image");
+  const { restaurantId } = useLoginStore();
 
+  
   useEffect(() => {
     const fetchDataForDropdown = async () => {
+      if (!restaurantId) {
+        setError("Restaurant ID is missing");
+        return;
+      }
       try {
-        const categoriesData = await fetchCategories(
-          initialValues.restaurantId
-        );
-        const restrictionsData = await fetchRestriction(
-          initialValues.restaurantId
-        );
+        setLoading(true);
+        const categoriesData = await fetchCategories(restaurantId);
+        const restrictionsData = await fetchRestriction(restaurantId);
         const ingredientsData = await fetchIngredients();
 
         setCategories(categoriesData);
@@ -109,8 +113,7 @@ const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
       }
     };
     fetchDataForDropdown();
-  }, []);
-
+  }, [restaurantId]);
   return (
     <>
       <Formik

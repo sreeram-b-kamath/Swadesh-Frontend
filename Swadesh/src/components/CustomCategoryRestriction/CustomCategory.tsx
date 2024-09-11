@@ -14,9 +14,9 @@ import Typography from "@mui/material/Typography";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
+import { useLoginStore } from "../../Store/useLoginStore";
 
 const defaultCategories = ["Appetizers", "Main Course", "Dessert"];
-const restaurantId = 1;
 
 interface Category {
   id: number;
@@ -46,6 +46,7 @@ const CustomCategory = () => {
     "success"
   );
   const navigate = useNavigate();
+  const { restaurantId } = useLoginStore();
 
   useEffect(() => {
     const fetchCategories = async () => {

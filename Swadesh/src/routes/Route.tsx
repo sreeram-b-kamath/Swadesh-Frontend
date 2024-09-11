@@ -25,7 +25,6 @@ const RoutesComponent = () => {
           <Route path="/categories" element={<CustomCategories />} />
           <Route path="/restrictions" element={<CustomRestrictions />} />
         </Route>
-
         {/* Protect these routes based on the user's role */}
         <Route element={<PrivateRoute allowedRoles={[0]} />}>
           <Route path="/preference" element={<Preference />} />

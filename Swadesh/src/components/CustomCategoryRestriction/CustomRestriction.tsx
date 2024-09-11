@@ -14,9 +14,9 @@ import Typography from "@mui/material/Typography";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
+import { useLoginStore } from "../../Store/useLoginStore";
 
 const defaultRestrictions = ["Vegan", "Gluten-Free", "Nut-Free"];
-const restaurantId = 1;
 
 interface Restriction {
   id: number;
@@ -50,6 +50,7 @@ const CustomRestriction = () => {
     "success"
   );
   const navigate = useNavigate();
+  const { restaurantId } = useLoginStore();
 
   useEffect(() => {
     const fetchRestrictions = async () => {

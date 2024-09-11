@@ -25,11 +25,11 @@ import {
 } from "@mui/material";
 import {
   fetchMenuItems,
-  initialValues,
   fetchIngredients,
   deleteMenuItems,
 } from "../../Store/AddToMenu/AddToMenuStore";
 import React from "react";
+import { useLoginStore } from "../../Store/useLoginStore";
 
 export default function RecipeReviewCard() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -41,6 +41,8 @@ export default function RecipeReviewCard() {
   const [deleteFailureOpen, setdeleteFailureOpen] = useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
+  const { restaurantId } = useLoginStore();
+  const validRestaurantId = restaurantId ?? -1;
 
   const handleDeleteClick = (menuItemId: number) => {
     setDeleteItemId(menuItemId);
@@ -75,11 +77,9 @@ export default function RecipeReviewCard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const MenuItemsData = await fetchMenuItems(initialValues.restaurantId);
+        const MenuItemsData = await fetchMenuItems(validRestaurantId);
         const IngredientsData = await fetchIngredients();
-        const restrictionsData = await fetchRestriction(
-          initialValues.restaurantId
-        );
+        const restrictionsData = await fetchRestriction(validRestaurantId);
         setRestrictions(restrictionsData);
         setMenuItems(MenuItemsData);
         setIngredient(IngredientsData);
