@@ -17,8 +17,7 @@ const RoutesComponent = () => {
         <Route path="/" element={<LoginPage />} />
         <Route path="/SignUp" element={<SignUp />} />
         <Route path="/otp-verification" element={<OtpVerificationPage onSubmit={function (otp: string): void {
-                  throw new Error('Function not implemented.');
-        {/* Protect these routes based on the user's role */}
+                  throw new Error('Function not implemented.');}} />} />
         <Route element={<PrivateRoute allowedRoles={[1]} />}>
           <Route path="/add-to-menu" element={<AddToMenu />} />
           <Route path="/categories" element={<CustomCategories />} />
