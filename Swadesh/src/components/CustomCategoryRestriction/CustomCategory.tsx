@@ -1,4 +1,4 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios'; 
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -14,7 +14,8 @@ import Typography from '@mui/material/Typography';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
-
+import { useLoginStore } from '../../Store/useLoginStore'; // Import the Zustand store
+import { LoginState } from '../../Store/useLoginStore';
 
 const defaultCategories = ['Appetizers', 'Main Course', 'Dessert'];
 const restaurantId = 1;  
@@ -45,29 +46,26 @@ const CustomCategory = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
   const navigate = useNavigate();
-  
 
-
+  // Access the JWT token from Zustand store
+  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
 
   useEffect(() => {
+    console.log("JWT Token:", jwtToken); // Check the token value
     const fetchCategories = async () => {
-    
-      try {
-        const response = await axios.get(`https://localhost:7107/api/Category/${restaurantId}`);
-        const data = response.data;
-        console.log(response)
-        console.log(response.data)
-        console.log(response.data.$values)
-        if (data && data.$values && data.$values.length > 0) {
-          setExistingCategories(data.$values);
-          setSelectedCategories(data.$values.map((category: Category) => category.name));
-        }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-     }
+       try {
+          const response = await axios.get(`https://localhost:7107/api/Category/${restaurantId}`, {
+             headers: {
+                Authorization: `Bearer ${jwtToken}`, // Ensure this has the correct format
+             },
+          });
+       } catch (error) {
+          console.error("Error fetching categories:", error);
+       }
     };
-    fetchCategories();
-  }, []);
+    if (jwtToken) fetchCategories();
+ }, [jwtToken]);
+ 
 
   const handleChange = (event: SelectChangeEvent<typeof selectedCategories>) => {
     const {
@@ -80,8 +78,6 @@ const CustomCategory = () => {
 
   const handleAddCategory = () => {
     const trimmedCategory = newCategory.trim().toLowerCase();
-    console.log(newCategory)
-    console.log(trimmedCategory)
 
     if (trimmedCategory && !selectedCategories.map(category => category.toLowerCase()).includes(trimmedCategory)) {
       setSelectedCategories([...selectedCategories, newCategory.trim()]);
@@ -103,11 +99,9 @@ const CustomCategory = () => {
   const handleBack = () => {
     navigate('/add-to-menu'); 
   };
+
   const handleSave = async () => {
     try {
-      console.log("Selected Categories:", selectedCategories);
-      console.log("Existing Categories:", existingCategories);
-
       const categoriesToAdd = selectedCategories.filter(
         category => 
           !existingCategories.some(existing => existing.name.toLowerCase() === category.toLowerCase())
@@ -119,8 +113,6 @@ const CustomCategory = () => {
         )
         .map(existing => existing.id);
 
-      console.log("Categories to Add:", categoriesToAdd);
-
       if (categoriesToAdd.length > 0) {
         const addRequests = categoriesToAdd.map(name => {
           const payload = {
@@ -128,18 +120,20 @@ const CustomCategory = () => {
             restaurantID: restaurantId,
             active: true
           };
-          console.log("Posting Payload:", payload);
-          return axios.post(`https://localhost:7107/api/Category`, payload);
+          return axios.post(`https://localhost:7107/api/Category`, payload, {
+            headers: {
+               Authorization: `Bearer ${jwtToken}`,
+            },});
         });
         await Promise.all(addRequests);
       }
 
-      console.log("Categories to Delete:", categoriesToDelete);
-
       if (categoriesToDelete.length > 0) {
         const deleteRequests = categoriesToDelete.map(id => {
-          console.log("Deleting ID:", id);
-          return axios.delete(`https://localhost:7107/api/Category/${id}`);
+          return axios.delete(`https://localhost:7107/api/Category/${id}`, {
+            headers: {
+               Authorization: `Bearer ${jwtToken}`, // Ensure this has the correct format
+            },});
         });
         await Promise.all(deleteRequests);
       }
@@ -191,15 +185,15 @@ const CustomCategory = () => {
           sx={{ mt: 2, width: '100%' }}
         />
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-  <Button 
-    variant="contained" 
-    onClick={handleAddCategory} 
-    sx={{ width: 'auto', backgroundColor: '#446732', borderRadius: 3 }} 
-    disabled={!newCategory.trim()}
-  >
-    Add
-  </Button>
-</Box>
+          <Button 
+            variant="contained" 
+            onClick={handleAddCategory} 
+            sx={{ width: 'auto', backgroundColor: '#446732', borderRadius: 3 }} 
+            disabled={!newCategory.trim()}
+          >
+            Add
+          </Button>
+        </Box>
 
       </Box>
 
@@ -219,7 +213,7 @@ const CustomCategory = () => {
         ) : (
           <Typography sx={{ color: "grey" }} variant="body1">Nothing selected</Typography>
         )}
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6,gap:1}}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6, gap: 1 }}>
           <Button 
             variant="contained" 
             sx={{ width: 'auto', backgroundColor: '#446732', borderRadius: 3 }} 
@@ -241,8 +235,7 @@ const CustomCategory = () => {
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
-        anchorOrigin={{ vertical: 'bottom',horizontal:'center' }}
-
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         onClose={handleSnackbarClose}
       >
         <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>

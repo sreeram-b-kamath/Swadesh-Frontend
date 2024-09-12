@@ -18,17 +18,20 @@ interface RestaurantState {
   restaurant: Restaurant | null;
   loading: boolean;
   error: string | null;
-  fetchRestaurant: () => void;
+  fetchRestaurant: (jwtToken : string | null) => void;
 }
 
 const useRestaurantStore = create<RestaurantState>((set) => ({
   restaurant: null,
   loading: false,
   error: null,
-  fetchRestaurant: async () => {
+  fetchRestaurant: async (jwtToken : string | null) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.get<Restaurant>('https://localhost:7107/api/Restaurant/4');
+      const response = await axios.get<Restaurant>('https://localhost:7107/api/Restaurant/1' , {
+        headers: {
+           Authorization: `Bearer ${jwtToken}`, // Ensure this has the correct format
+        },});
         set({ restaurant: response.data , loading: false});
       
     } catch (error: any) {

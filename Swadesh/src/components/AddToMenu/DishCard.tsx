@@ -23,6 +23,8 @@ import {
   fetchIngredients,
   deleteMenuItems,
 } from "../../Store/AddToMenu/AddToMenuStore";
+import { useLoginStore } from '../../Store/useLoginStore'; // Import the Zustand store
+import { LoginState } from '../../Store/useLoginStore';
 
 export default function RecipeReviewCard() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -33,12 +35,13 @@ export default function RecipeReviewCard() {
     message: string;
     severity: "info" | "success" | "error" | "warning";
   } | null>(null);
+  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const MenuItemsData = await fetchMenuItems(initialValues.restaurantId);
-        const IngredientsData = await fetchIngredients();
+        const MenuItemsData = await fetchMenuItems(initialValues.restaurantId, jwtToken);
+        const IngredientsData = await fetchIngredients(jwtToken);
         setMenuItems(MenuItemsData);
         setIngredient(IngredientsData);
       } catch (error) {
@@ -82,7 +85,7 @@ export default function RecipeReviewCard() {
     );
     if (isConfirmed) {
       try {
-        await deleteMenuItems(menuItemId);
+        await deleteMenuItems(menuItemId, jwtToken);
 
         setMenuItems(menuItems.filter((item) => item.id !== menuItemId));
         setAlert({

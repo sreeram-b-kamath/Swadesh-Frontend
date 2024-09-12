@@ -1,15 +1,20 @@
-import { Avatar, Box, Link } from "@mui/material";
+import { Avatar, Box, Button, Link } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import QRCode from 'react-qr-code';
 import { useRef, useState, useEffect } from "react";
 import axios from "axios"; 
+import { useLoginStore } from "../../Store/useLoginStore";
+import { LoginState } from '../../Store/useLoginStore';
 
 const restaurantId = 1;  
 
 interface Restaurant {
   name: string;
   logo: string;
+  ownerName : string;
+  address: string;
+  status: string;
 }
 
 const Navbar = () => {
@@ -25,6 +30,8 @@ const Navbar = () => {
     setIsNavOpen(!isNavOpen);
   };
 
+  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
+
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);
   };
@@ -33,14 +40,20 @@ const Navbar = () => {
   useEffect(() => {
     const fetchRestaurantData = async () => {
       try {
-        const response = await axios.get(`https://localhost:7107/api/Restaurant/${restaurantId}`);
+        const response = await axios.get(`https://localhost:7107/api/Restaurant/${restaurantId}`, {
+          headers: {
+             Authorization: `Bearer ${jwtToken}`, // Ensure this has the correct format
+          },});
+          console.log(response.data);
+          
         setRestaurant(response.data); 
       } catch (error) {
         console.error("Error fetching restaurant data", error);
       }
     };
     fetchRestaurantData();
-  }, []);
+  }, [jwtToken]);  // Ensure jwtToken is included in the dependency array
+  
   return (
     <>
       <Box
@@ -79,7 +92,6 @@ const Navbar = () => {
             aria-label="recipe"
             onClick={toggleProfile}
           ></Avatar>
-          /> 
         </Box>
 
         <nav
@@ -213,12 +225,13 @@ const Navbar = () => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                gap : "30px"
               }}
             >
               <Box
                 sx={{
-                  width: "150px",
-                  height: "150px",
+                  width: "256px",
+                  height: "256px",
                   backgroundColor: "#446732",
                 }}
               >
@@ -226,14 +239,11 @@ const Navbar = () => {
                         value={"http://192.168.221.87:5173/preference-selection"}
                         bgColor={"#FFFFFF"}
                         fgColor={"#000000"}
-                        size={128}
+                        size={256}
                     />
               </Box>
-              <Box>Your QR code</Box>
+              <Button>Download</Button>
             </Box>
-            <Box>Restaraunt Name:Thaal Kitchen</Box>
-            <Box>address:Thaal Kitchen</Box>
-            <Box>Status:Kitchen</Box>
           </Box>
         </Box>
       </Box>

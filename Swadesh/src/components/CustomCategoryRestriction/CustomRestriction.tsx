@@ -14,6 +14,8 @@ import Typography from '@mui/material/Typography';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
+import { useLoginStore } from '../../Store/useLoginStore'; // Import the Zustand store
+import { LoginState } from '../../Store/useLoginStore';
 
 
 const defaultRestrictions = ['Vegan', 'Gluten-Free', 'Nut-Free']; 
@@ -46,11 +48,15 @@ const CustomRestriction = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
   const navigate = useNavigate();
 
+  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
 
   useEffect(() => {
     const fetchRestrictions = async () => {
       try {
-        const response = await axios.get(`https://localhost:7107/api/Restriction/${restaurantId}`);
+        const response = await axios.get(`https://localhost:7107/api/Restriction/${restaurantId}` , {
+          headers: {
+             Authorization: `Bearer ${jwtToken}`, // Ensure this has the correct format
+          },});
         const data = response.data;
 
         if (data && data.$values && data.$values.length > 0) {
@@ -117,7 +123,10 @@ const CustomRestriction = () => {
             active: true
           };
           console.log("Posting Payload:", payload);
-          return axios.post(`https://localhost:7107/api/Restriction`, payload);
+          return axios.post(`https://localhost:7107/api/Restriction`, payload , {
+            headers: {
+               Authorization: `Bearer ${jwtToken}`, // Ensure this has the correct format
+            },});
         });
         await Promise.all(addRequests);
       }
@@ -127,7 +136,10 @@ const CustomRestriction = () => {
       if (restrictionsToDelete.length > 0) {
         const deleteRequests = restrictionsToDelete.map(id => {
           console.log("Deleting ID:", id);
-          return axios.delete(`https://localhost:7107/api/Restriction/${id}`);
+          return axios.delete(`https://localhost:7107/api/Restriction/${id}` , {
+            headers: {
+               Authorization: `Bearer ${jwtToken}`, // Ensure this has the correct format
+            },});
         });
         await Promise.all(deleteRequests);
       }
