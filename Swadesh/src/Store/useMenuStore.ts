@@ -9,6 +9,7 @@ interface MenuItem {
   categoryName: string;
   primaryImage: string;
   description: string;
+  ingredients: { name: string; image: string }[];
 }
 
 interface Category {

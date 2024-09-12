@@ -27,6 +27,7 @@ interface MenuItem {
   categoryName: string;
   primaryImage: string;
   description: string;
+  ingredients: { name: string; image: string }[];
 }
 
 interface Category {
@@ -142,6 +143,7 @@ const MenuPage = () => {
                   name={item.name}
                   money={item.money}
                   description={item.description}
+                  ingredients={item.ingredients}
                 />
               ))}
             </div>
@@ -162,6 +164,7 @@ const MenuPage = () => {
                     name={item.name}
                     money={item.money}
                     description={item.description}
+                    ingredients={item.ingredients}
                   />
                 ))}
               </div>
@@ -185,6 +188,7 @@ const MenuPage = () => {
                     name={item.name}
                     money={item.money}
                     description={item.description}
+                    ingredients={item.ingredients}
                   />
                 ))}
               </div>
