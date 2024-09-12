@@ -1,13 +1,13 @@
 import { Avatar, Box, Button, Link } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import QRCode from 'react-qr-code';
+import QRCode from "react-qr-code";
 import { useRef, useState, useEffect } from "react";
+
 import axios from "axios"; 
 import { useLoginStore } from "../../Store/useLoginStore";
 import { LoginState } from '../../Store/useLoginStore';
 
-const restaurantId = 1;  
 
 interface Restaurant {
   name: string;
@@ -24,6 +24,7 @@ const Navbar = () => {
 
   const navRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef();
+  const { restaurantId } = useLoginStore();
 
   // Function to toggle the navbar
   const toggleNavBar = () => {
@@ -74,16 +75,27 @@ const Navbar = () => {
 
         <Box
           className="restarauntName"
-          sx={{ display: "flex", color: "#446732", fontWeight: "bold", alignItems: "center" }}
+          sx={{
+            display: "flex",
+            color: "#446732",
+            fontWeight: "bold",
+            alignItems: "center",
+          }}
         >
           {restaurant && (
-            <img 
-              src={restaurant.logo} 
-              alt={`${restaurant.name} logo`} 
-              style={{ width: 40, height: 40, borderRadius: "50%", marginRight: "10px" }}
+            <img
+              src={restaurant.logo}
+              alt={`${restaurant.name} logo`}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                marginRight: "10px",
+              }}
             />
           )}
-          {restaurant ? restaurant.name : "Loading..."} {/* Display restaurant name */}
+          {restaurant ? restaurant.name : "Loading..."}{" "}
+          {/* Display restaurant name */}
         </Box>
 
         <Box>

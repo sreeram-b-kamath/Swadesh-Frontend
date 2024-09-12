@@ -16,10 +16,7 @@ import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 import { useLoginStore } from '../../Store/useLoginStore'; // Import the Zustand store
 import { LoginState } from '../../Store/useLoginStore';
-
-
-const defaultRestrictions = ['Vegan', 'Gluten-Free', 'Nut-Free']; 
-const restaurantId = 1;  
+const defaultRestrictions = ['Vegan', 'Gluten-Free', 'Nut-Free'];   
 
 interface Restriction {
   id: number;
@@ -40,15 +37,22 @@ const MenuProps = {
 };
 
 const CustomRestriction = () => {
-  const [selectedRestrictions, setSelectedRestrictions] = useState<string[]>([]);
-  const [newRestriction, setNewRestriction] = useState('');
-  const [existingRestrictions, setExistingRestrictions] = useState<Restriction[]>([]);
+  const [selectedRestrictions, setSelectedRestrictions] = useState<string[]>(
+    []
+  );
+  const [newRestriction, setNewRestriction] = useState("");
+  const [existingRestrictions, setExistingRestrictions] = useState<
+    Restriction[]
+  >([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
   const navigate = useNavigate();
 
   const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
+  const { restaurantId } = useLoginStore();
 
   useEffect(() => {
     const fetchRestrictions = async () => {
@@ -59,9 +63,11 @@ const CustomRestriction = () => {
           },});
         const data = response.data;
 
-        if (data && data.$values && data.$values.length > 0) {
-          setExistingRestrictions(data.$values);
-          setSelectedRestrictions(data.$values.map((restriction: Restriction) => restriction.name));
+        if (data && data && data.length > 0) {
+          setExistingRestrictions(data);
+          setSelectedRestrictions(
+            data.map((restriction: Restriction) => restriction.name)
+          );
         }
       } catch (error) {
         console.error("Error fetching restrictions:", error);
@@ -71,33 +77,44 @@ const CustomRestriction = () => {
     fetchRestrictions();
   }, []);
 
-  const handleChange = (event: SelectChangeEvent<typeof selectedRestrictions>) => {
-    const { target: { value } } = event;
+  const handleChange = (
+    event: SelectChangeEvent<typeof selectedRestrictions>
+  ) => {
+    const {
+      target: { value },
+    } = event;
     setSelectedRestrictions(
-      typeof value === 'string' ? value.split(',') : value,
+      typeof value === "string" ? value.split(",") : value
     );
   };
 
   const handleBack = () => {
-    navigate('/add-to-menu'); 
+    navigate("/add-to-menu");
   };
 
   const handleAddRestriction = () => {
     const trimmedRestriction = newRestriction.trim();
-    if (trimmedRestriction && !selectedRestrictions.includes(trimmedRestriction)) {
+    if (
+      trimmedRestriction &&
+      !selectedRestrictions.includes(trimmedRestriction)
+    ) {
       setSelectedRestrictions([...selectedRestrictions, trimmedRestriction]);
-      setNewRestriction('');
-      setSnackbarMessage('Restriction added successfully');
-      setSnackbarSeverity('success');
+      setNewRestriction("");
+      setSnackbarMessage("Restriction added successfully");
+      setSnackbarSeverity("success");
     } else {
-      setSnackbarMessage('Restriction already exists');
-      setSnackbarSeverity('error');
+      setSnackbarMessage("Restriction already exists");
+      setSnackbarSeverity("error");
     }
     setSnackbarOpen(true);
   };
 
   const handleDeleteRestriction = (restrictionToDelete: string) => {
-    setSelectedRestrictions(selectedRestrictions.filter(restriction => restriction !== restrictionToDelete));
+    setSelectedRestrictions(
+      selectedRestrictions.filter(
+        (restriction) => restriction !== restrictionToDelete
+      )
+    );
   };
 
   const handleSave = async () => {
@@ -106,21 +123,24 @@ const CustomRestriction = () => {
       console.log("Existing Restrictions:", existingRestrictions);
 
       const restrictionsToAdd = selectedRestrictions.filter(
-        restriction => !existingRestrictions.some(existing => existing.name === restriction)
+        (restriction) =>
+          !existingRestrictions.some(
+            (existing) => existing.name === restriction
+          )
       );
 
       const restrictionsToDelete = existingRestrictions
-        .filter(existing => !selectedRestrictions.includes(existing.name))
-        .map(existing => existing.id);
+        .filter((existing) => !selectedRestrictions.includes(existing.name))
+        .map((existing) => existing.id);
 
       console.log("Restrictions to Add:", restrictionsToAdd);
 
       if (restrictionsToAdd.length > 0) {
-        const addRequests = restrictionsToAdd.map(name => {
+        const addRequests = restrictionsToAdd.map((name) => {
           const payload = {
             name,
             restaurantID: restaurantId,
-            active: true
+            active: true,
           };
           console.log("Posting Payload:", payload);
           return axios.post(`https://localhost:7107/api/Restriction`, payload , {
@@ -134,7 +154,7 @@ const CustomRestriction = () => {
       console.log("Restrictions to Delete:", restrictionsToDelete);
 
       if (restrictionsToDelete.length > 0) {
-        const deleteRequests = restrictionsToDelete.map(id => {
+        const deleteRequests = restrictionsToDelete.map((id) => {
           console.log("Deleting ID:", id);
           return axios.delete(`https://localhost:7107/api/Restriction/${id}` , {
             headers: {
@@ -144,12 +164,12 @@ const CustomRestriction = () => {
         await Promise.all(deleteRequests);
       }
 
-      setSnackbarMessage('Restrictions saved successfully');
-      setSnackbarSeverity('success');
+      setSnackbarMessage("Restrictions saved successfully");
+      setSnackbarSeverity("success");
     } catch (error) {
       console.error("Error saving restrictions:", error);
-      setSnackbarMessage('Error saving restrictions');
-      setSnackbarSeverity('error');
+      setSnackbarMessage("Error saving restrictions");
+      setSnackbarSeverity("error");
     } finally {
       setSnackbarOpen(true);
     }
@@ -160,10 +180,20 @@ const CustomRestriction = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+      }}
+    >
       <Box sx={{ m: 1, width: 300 }}>
-        <FormControl sx={{ width: '100%' }}>
-          <InputLabel id="demo-multiple-checkbox-label">Restrictions</InputLabel>
+        <FormControl sx={{ width: "100%" }}>
+          <InputLabel id="demo-multiple-checkbox-label">
+            Restrictions
+          </InputLabel>
           <Select
             labelId="demo-multiple-checkbox-label"
             id="demo-multiple-checkbox"
@@ -171,12 +201,14 @@ const CustomRestriction = () => {
             value={selectedRestrictions}
             onChange={handleChange}
             input={<OutlinedInput label="Dietary Restrictions" />}
-            renderValue={(selected) => selected.join(', ')}
+            renderValue={(selected) => selected.join(", ")}
             MenuProps={MenuProps}
           >
             {defaultRestrictions.map((restriction) => (
               <MenuItem key={restriction} value={restriction}>
-                <Checkbox checked={selectedRestrictions.indexOf(restriction) > -1} />
+                <Checkbox
+                  checked={selectedRestrictions.indexOf(restriction) > -1}
+                />
                 {restriction}
               </MenuItem>
             ))}
@@ -188,13 +220,13 @@ const CustomRestriction = () => {
           variant="outlined"
           value={newRestriction}
           onChange={(e) => setNewRestriction(e.target.value)}
-          sx={{ mt: 2, width: '100%' }}
+          sx={{ mt: 2, width: "100%" }}
         />
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-          <Button 
-            variant="contained" 
-            onClick={handleAddRestriction} 
-            sx={{ width: 'auto', backgroundColor: '#446732', borderRadius: 3 }}
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+          <Button
+            variant="contained"
+            onClick={handleAddRestriction}
+            sx={{ width: "auto", backgroundColor: "#446732", borderRadius: 3 }}
             disabled={!newRestriction.trim()}
           >
             Add
@@ -203,33 +235,49 @@ const CustomRestriction = () => {
       </Box>
 
       <Box sx={{ width: 300, mt: 3, p: 2 }}>
-        <Typography sx={{ color: "black", fontSize: '1rem' }} variant="h6">Selected Restrictions:</Typography>
+        <Typography sx={{ color: "black", fontSize: "1rem" }} variant="h6">
+          Selected Restrictions:
+        </Typography>
         {selectedRestrictions.length > 0 ? (
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, maxHeight: 150, overflowY: 'auto' }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 1,
+              maxHeight: 150,
+              overflowY: "auto",
+            }}
+          >
             {selectedRestrictions.map((restriction) => (
               <Chip
                 key={restriction}
                 label={restriction}
                 onDelete={() => handleDeleteRestriction(restriction)}
-                sx={{ backgroundColor: '#446732', color: 'white', borderRadius: 3 }}
+                sx={{
+                  backgroundColor: "#446732",
+                  color: "white",
+                  borderRadius: 3,
+                }}
               />
             ))}
           </Box>
         ) : (
-          <Typography sx={{ color: "grey" }} variant="body1">Nothing selected</Typography>
+          <Typography sx={{ color: "grey" }} variant="body1">
+            Nothing selected
+          </Typography>
         )}
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 ,gap:1}}>
-          <Button 
-            variant="contained" 
-            sx={{ width: 'auto', backgroundColor: '#446732', borderRadius: 3 }} 
-            disabled={selectedRestrictions.length === 0} 
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2, gap: 1 }}>
+          <Button
+            variant="contained"
+            sx={{ width: "auto", backgroundColor: "#446732", borderRadius: 3 }}
+            disabled={selectedRestrictions.length === 0}
             onClick={handleSave}
           >
             Save
           </Button>
-          <Button 
-            variant="contained" 
-            sx={{ width: 'auto', backgroundColor: '#446732', borderRadius: 3 }} 
+          <Button
+            variant="contained"
+            sx={{ width: "auto", backgroundColor: "#446732", borderRadius: 3 }}
             onClick={handleBack}
           >
             Back
@@ -240,15 +288,19 @@ const CustomRestriction = () => {
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         onClose={handleSnackbarClose}
       >
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
     </Box>
   );
-}
+};
 
 export default CustomRestriction;

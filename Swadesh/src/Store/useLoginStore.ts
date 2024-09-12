@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import axios from 'axios';
+import { create } from "zustand";
+import axios from "axios";
 
 export interface LoginState {
     loginLoading: boolean;
@@ -9,6 +9,7 @@ export interface LoginState {
     jwtToken: string | null;
     loginUser: (email: string, password: string) => Promise<boolean>;
     logoutUser: () => void;
+    restaurantId: number | null;
 }
 
 export const useLoginStore = create<LoginState>((set) => ({
@@ -17,6 +18,7 @@ export const useLoginStore = create<LoginState>((set) => ({
     loginSuccess: false,
     userRole: null,
     jwtToken: null,
+    restaurantId: null,
 
     loginUser: async (email, password) => {
         set({ loginLoading: true, loginError: null, loginSuccess: false });
@@ -30,12 +32,12 @@ export const useLoginStore = create<LoginState>((set) => ({
             // Destructure jwtToken and role from the response data
             const { jwtToken, role } = response.data;
 
-            set({ loginLoading: false, loginSuccess: true, userRole: role, jwtToken: jwtToken });
+            set({ loginLoading: false, loginSuccess: true, userRole: role, jwtToken: jwtToken, restaurantId: userInfo.restaurantId });
             
             return true;
         } catch (error: any) {
             const errorMessage = error.response?.data?.message || error.message || 'Something went wrong';
-            set({ loginLoading: false, loginError: errorMessage, loginSuccess: false, userRole: null, jwtToken: null });
+            set({ loginLoading: false, loginError: errorMessage, loginSuccess: false, userRole: null, jwtToken: null, restaurantId: null});
             return false;
         }
     },
