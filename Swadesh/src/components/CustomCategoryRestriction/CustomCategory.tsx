@@ -1,22 +1,23 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import Checkbox from "@mui/material/Checkbox";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Chip from "@mui/material/Chip";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-import { useNavigate } from "react-router-dom";
-import { useLoginStore } from "../../Store/useLoginStore";
+import { useState, useEffect } from 'react';
+import axios from 'axios'; 
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Checkbox from '@mui/material/Checkbox';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip'; 
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { useNavigate } from 'react-router-dom';
+import { useLoginStore } from '../../Store/useLoginStore'; // Import the Zustand store
+import { LoginState } from '../../Store/useLoginStore';
 
-const defaultCategories = ["Appetizers", "Main Course", "Dessert"];
+const defaultCategories = ['Appetizers', 'Main Course', 'Dessert'];
 
 interface Category {
   id: number;
@@ -46,9 +47,13 @@ const CustomCategory = () => {
     "success"
   );
   const navigate = useNavigate();
+
+  // Access the JWT token from Zustand store
+  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
   const { restaurantId } = useLoginStore();
 
   useEffect(() => {
+    console.log("JWT Token:", jwtToken); // Check the token value
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
@@ -68,8 +73,9 @@ const CustomCategory = () => {
         console.error("Error fetching categories:", error);
       }
     };
-    fetchCategories();
-  }, []);
+    if (jwtToken) fetchCategories();
+ }, [jwtToken]);
+ 
 
   const handleChange = (
     event: SelectChangeEvent<typeof selectedCategories>
@@ -82,8 +88,6 @@ const CustomCategory = () => {
 
   const handleAddCategory = () => {
     const trimmedCategory = newCategory.trim().toLowerCase();
-    console.log(newCategory);
-    console.log(trimmedCategory);
 
     if (
       trimmedCategory &&
@@ -111,11 +115,9 @@ const CustomCategory = () => {
   const handleBack = () => {
     navigate("/add-to-menu");
   };
+
   const handleSave = async () => {
     try {
-      console.log("Selected Categories:", selectedCategories);
-      console.log("Existing Categories:", existingCategories);
-
       const categoriesToAdd = selectedCategories.filter(
         (category) =>
           !existingCategories.some(
@@ -132,8 +134,6 @@ const CustomCategory = () => {
         )
         .map((existing) => existing.id);
 
-      console.log("Categories to Add:", categoriesToAdd);
-
       if (categoriesToAdd.length > 0) {
         const addRequests = categoriesToAdd.map((name) => {
           const payload = {
@@ -141,18 +141,20 @@ const CustomCategory = () => {
             restaurantID: restaurantId,
             active: true,
           };
-          console.log("Posting Payload:", payload);
-          return axios.post(`https://localhost:7107/api/Category`, payload);
+          return axios.post(`https://localhost:7107/api/Category`, payload, {
+            headers: {
+               Authorization: `Bearer ${jwtToken}`,
+            },});
         });
         await Promise.all(addRequests);
       }
 
-      console.log("Categories to Delete:", categoriesToDelete);
-
       if (categoriesToDelete.length > 0) {
-        const deleteRequests = categoriesToDelete.map((id) => {
-          console.log("Deleting ID:", id);
-          return axios.delete(`https://localhost:7107/api/Category/${id}`);
+        const deleteRequests = categoriesToDelete.map(id => {
+          return axios.delete(`https://localhost:7107/api/Category/${id}`, {
+            headers: {
+               Authorization: `Bearer ${jwtToken}`, // Ensure this has the correct format
+            },});
         });
         await Promise.all(deleteRequests);
       }
@@ -257,6 +259,7 @@ const CustomCategory = () => {
             Nothing selected
           </Typography>
         )}
+
         <Box sx={{ display: "flex", justifyContent: "center", mt: 6, gap: 1 }}>
           <Button
             variant="contained"
@@ -279,7 +282,7 @@ const CustomCategory = () => {
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         onClose={handleSnackbarClose}
       >
         <Alert

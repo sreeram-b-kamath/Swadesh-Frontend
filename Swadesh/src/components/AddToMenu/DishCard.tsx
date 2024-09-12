@@ -1,3 +1,4 @@
+import React from "react";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
@@ -32,8 +33,8 @@ import {
   fetchIngredients,
   deleteMenuItems,
 } from "../../Store/AddToMenu/AddToMenuStore";
-import React from "react";
-import { useLoginStore } from "../../Store/useLoginStore";
+import { useLoginStore } from '../../Store/useLoginStore'; // Import the Zustand store
+import { LoginState } from '../../Store/useLoginStore';
 import EditMenuModal from "./EditMenuModal";
 
 export default function RecipeReviewCard() {
@@ -42,6 +43,11 @@ export default function RecipeReviewCard() {
   const [ingredient, setIngredient] = useState<Ingredients[]>([]);
   const [restrictions, setRestrictions] = useState<Restriction[]>([]);
   const [selectedRestriction, setSelectedRestriction] = useState<string>("");
+  const [alert, setAlert] = useState<{
+    message: string;
+    severity: "info" | "success" | "error" | "warning";
+  } | null>(null);
+  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
   const [successOpen, setSuccessOpen] = useState<boolean>(false);
   const [deleteFailureOpen, setdeleteFailureOpen] = useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
@@ -51,7 +57,6 @@ export default function RecipeReviewCard() {
   const validRestaurantId = restaurantId ?? -1;
 
   const [fetchTrigger, setFetchTrigger] = useState(false); 
-
 
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [selectedMenuItemId, setSelectedMenuItemId] = useState<number | null>(

@@ -32,6 +32,7 @@ export interface AddToMenuFormProps {
   onSubmit: (values: typeof initialValues) => void;
   onCancel: () => void;
 }
+
 export const initialValues = {
   name: "",
   description: "",
@@ -47,16 +48,18 @@ export const initialValues = {
 };
 
 const CategoryURL = "https://localhost:7107/api/Category";
-
 const MenuURL = "https://localhost:7107/api/MenuItems";
-
 const IngredientURL = "https://localhost:7107/api/Ingredients";
-
 const RestrictionURL = "https://localhost:7107/api/Restriction";
 
-export const fetchCategories = async (restaurantId: number) => {
+export const fetchCategories = async (restaurantId: number, jwtToken : string | null) => {
   try {
-    const response = await axios.get(`${CategoryURL}/${restaurantId}`);
+    const response = await axios.get(`${CategoryURL}/${restaurantId}`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`, // Add JWT token in the header
+      },
+    });
+
     return response.data;
   } catch (error) {
     console.error("Error fetching categories", error);
@@ -64,6 +67,14 @@ export const fetchCategories = async (restaurantId: number) => {
   }
 };
 
+export const fetchMenuItems = async (restaurantId: number, jwtToken : string | null) => {
+  try {
+    const response = await axios.get(`${MenuURL}/ByRestaurant/${restaurantId}`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`, // Add JWT token in the header
+      },
+    });
+    
 export const fetchRestriction = async (restaurantId: number) => {
   try {
     const response = await axios.get(`${RestrictionURL}/${restaurantId}`);
@@ -73,12 +84,6 @@ export const fetchRestriction = async (restaurantId: number) => {
     throw error;
   }
 };
-
-export const fetchMenuItems = async (restaurantId: number) => {
-  try {
-    const response = await axios.get(
-      `${MenuURL}/ByRestaraunt/${restaurantId} `
-    );
     return response.data;
   } catch (error) {
     console.error("Error fetching menu items", error);
@@ -86,9 +91,13 @@ export const fetchMenuItems = async (restaurantId: number) => {
   }
 };
 
-export const fetchIngredients = async () => {
+export const fetchIngredients = async (jwtToken : string | null) => {
   try {
-    const response = await axios.get(`${IngredientURL}`);
+    const response = await axios.get(IngredientURL, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`, // Add JWT token in the header
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching ingredients", error);
@@ -96,9 +105,14 @@ export const fetchIngredients = async () => {
   }
 };
 
-export const deleteMenuItems = async (menuItemId: number) => {
+// Delete menu items with JWT token
+export const deleteMenuItems = async (menuItemId: number, jwtToken : string | null) => {
   try {
-    const response = await axios.delete(`${MenuURL}/${menuItemId}`);
+    const response = await axios.delete(`${MenuURL}/${menuItemId}`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`, // Add JWT token in the header
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error deleting menu item", error);

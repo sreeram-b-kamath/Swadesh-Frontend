@@ -23,7 +23,8 @@ import {
   Restriction,
   fetchCategories,
 } from "../../Store/AddToMenu/AddToMenuStore";
-import { useLoginStore } from "../../Store/useLoginStore";
+import { useLoginStore } from '../../Store/useLoginStore';
+import { LoginState } from '../../Store/useLoginStore';
 
 const resizeFile = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -44,6 +45,8 @@ const resizeFile = (file: File): Promise<string> =>
       "base64"
     );
   });
+
+  
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -88,8 +91,7 @@ const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [fileName, setFileName] = useState("Upload Image");
   const { restaurantId } = useLoginStore();
-
-  
+  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
   useEffect(() => {
     const fetchDataForDropdown = async () => {
       if (!restaurantId) {
@@ -97,10 +99,12 @@ const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
         return;
       }
       try {
+        const categoriesData = await fetchCategories(
+          initialValues.restaurantId, jwtToken
+        );
+        const ingredientsData = await fetchIngredients(jwtToken);
         setLoading(true);
-        const categoriesData = await fetchCategories(restaurantId);
         const restrictionsData = await fetchRestriction(restaurantId);
-        const ingredientsData = await fetchIngredients();
 
         setCategories(categoriesData);
         setRestrictions(restrictionsData);
@@ -112,8 +116,11 @@ const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
         setLoading(false);
       }
     };
-    fetchDataForDropdown();
-  }, [restaurantId]);
+    if (jwtToken) {
+      fetchDataForDropdown();
+    }
+  }, [jwtToken, restaurantId]);  // <- Add jwtToken as a dependency  
+
   return (
     <>
       <Formik
