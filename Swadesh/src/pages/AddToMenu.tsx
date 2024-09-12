@@ -1,14 +1,15 @@
 import { Alert, Box } from "@mui/material";
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { initialValues } from "../Store/AddToMenu/AddToMenuStore";
 import { useNavigate } from "react-router-dom";
 import { postMenuItem } from "../Store/AddToMenu/AddToMenuStore";
 import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
 import React from "react";
 import { useLoginStore } from "../Store/useLoginStore";
+
 const DishCard = lazy(() => import("../components/AddToMenu/DishCard"));
 const AddButton = lazy(() => import("../components/AddToMenu/AddButton"));
-const Navbar = lazy(() => import("../components/AddToMenu/Navbar"));
+const Navbar = lazy(() => import("../components/AddToMenu/navbar"));
 const AddToMenuForm = lazy(
   () => import("../components/AddToMenu/AddToMenuForm")
 );
@@ -25,9 +26,18 @@ const AddToMenu = () => {
     useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
   const navigate = useNavigate();
-  const { restaurantId } = useLoginStore((state) => ({
+
+  // Access the login store
+  const { restaurantId, jwtToken, checkLoginState } = useLoginStore((state) => ({
     restaurantId: state.restaurantId,
+    jwtToken: state.jwtToken,
+    checkLoginState: state.checkLoginState,
   }));
+
+  // Check login state on component mount
+  useEffect(() => {
+    checkLoginState();
+  }, [checkLoginState]);
 
   const handleAddClick = () => {
     setModalOpen(true);
@@ -60,7 +70,7 @@ const AddToMenu = () => {
       return;
     }
     try {
-      const response = await postMenuItem(values, restaurantId);
+      const response = await postMenuItem(values, restaurantId, jwtToken);
       console.log("Data posted successfully", response);
       setSnackbarMessage("Added to your menu successfully");
       setSuccessSnackbarOpen(true);
@@ -114,7 +124,6 @@ const AddToMenu = () => {
             </Suspense>
           </Box>
         )}
-        ;
         <Suspense fallback={<div>Loading Button...</div>}>
           <AddOptionsModal
             open={modalOpen}

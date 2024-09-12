@@ -54,7 +54,7 @@ export default function RecipeReviewCard() {
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const { restaurantId } = useLoginStore();
-  const validRestaurantId = restaurantId ?? -1;
+  const validRestaurantId = restaurantId ? restaurantId.toString() : string;
 
   const [fetchTrigger, setFetchTrigger] = useState(false); 
 
@@ -64,12 +64,12 @@ export default function RecipeReviewCard() {
   );
 
 
-  const handleDeleteClick = (menuItemId: number) => {
+  const handleDeleteClick = (menuItemId: number | null) => {
     setDeleteItemId(menuItemId);
     setConfirmOpen(true);
   };
 
-  const handleEdit = (itemId: number) => {
+  const handleEdit = (itemId: number | null) => {
     console.log("Editing menu item with ID:", itemId);
     setSelectedMenuItemId(itemId); 
     setEditModalOpen(true); 
@@ -98,7 +98,7 @@ export default function RecipeReviewCard() {
   const handleDeleteConfirm = async () => {
     if (deleteItemId !== null) {
       try {
-        await deleteMenuItems(deleteItemId);
+        await deleteMenuItems(deleteItemId, jwtToken);
         setMenuItems(menuItems.filter((item) => item.id !== deleteItemId));
         setSuccessOpen(true);
       } catch (error) {
@@ -112,10 +112,10 @@ export default function RecipeReviewCard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const MenuItemsData = await fetchMenuItems(validRestaurantId);
-        const IngredientsData = await fetchIngredients();
-        const restrictionsData = await fetchRestriction(validRestaurantId);
-        const categoriesData = await fetchCategories(validRestaurantId);
+        const MenuItemsData = await fetchMenuItems(validRestaurantId, jwtToken);
+        const IngredientsData = await fetchIngredients(jwtToken);
+        const restrictionsData = await fetchRestriction(validRestaurantId, jwtToken);
+        const categoriesData = await fetchCategories(validRestaurantId, jwtToken);
         setRestrictions(restrictionsData);
         setMenuItems(MenuItemsData);
         setIngredient(IngredientsData);

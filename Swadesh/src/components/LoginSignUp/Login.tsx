@@ -4,17 +4,21 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useLoginStore } from '../../Store/useLoginStore';
+import { LoginState } from '../../Store/useLoginStore';
 
 const Login = () => {
   const navigate = useNavigate();
   const { loginUser, loginLoading, loginError, loginSuccess, userRole } = useLoginStore();
+  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
+  console.log(jwtToken);
+  
 
   useEffect(() => {
     if (loginSuccess) {
       if (userRole === 1) {
         navigate('/add-to-menu');
       } else if (userRole === 0) {
-        navigate('/menu');
+        navigate('/preference-selection');
       }
     }
   }, [loginSuccess, userRole, navigate]);

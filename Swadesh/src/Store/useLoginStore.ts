@@ -7,9 +7,10 @@ export interface LoginState {
     loginSuccess: boolean;
     userRole: number | null;
     jwtToken: string | null;
+    restaurantId: string | number | null;
     loginUser: (email: string, password: string) => Promise<boolean>;
     logoutUser: () => void;
-    restaurantId: number | null;
+    checkLoginState: () => void;
 }
 
 export const useLoginStore = create<LoginState>((set) => ({
@@ -17,8 +18,8 @@ export const useLoginStore = create<LoginState>((set) => ({
     loginError: null,
     loginSuccess: false,
     userRole: null,
-    jwtToken: null,
-    restaurantId: null,
+    jwtToken: localStorage.getItem('jwtToken') || null,
+    restaurantId: localStorage.getItem('restaurantId') || null,
 
     loginUser: async (email, password) => {
         set({ loginLoading: true, loginError: null, loginSuccess: false });
@@ -26,12 +27,15 @@ export const useLoginStore = create<LoginState>((set) => ({
         try {
             const response = await axios.post('https://localhost:7107/api/Register/login', { email, password });
             
-            // Log the API response to inspect its structure
+            const userInfo = response.data;
             console.log('API Response:', response.data);
 
             // Destructure jwtToken and role from the response data
             const { jwtToken, role } = response.data;
 
+            localStorage.setItem('jwtToken', jwtToken);
+            localStorage.setItem('restaurantId', userInfo.restaurantId);
+            localStorage.setItem('role', role);
             set({ loginLoading: false, loginSuccess: true, userRole: role, jwtToken: jwtToken, restaurantId: userInfo.restaurantId });
             
             return true;
@@ -43,6 +47,12 @@ export const useLoginStore = create<LoginState>((set) => ({
     },
 
     logoutUser: () => {
-        set({ loginSuccess: false, userRole: null, jwtToken: null });
+        
+    },
+
+    checkLoginState: () => {
+        if (localStorage.getItem('jwtToken') && localStorage.getItem('restaurantId')) {
+            set({ loginSuccess: true, jwtToken: localStorage.getItem('jwtToken'), restaurantId: localStorage.getItem('restaurantId') });
+        }
     },
 }));

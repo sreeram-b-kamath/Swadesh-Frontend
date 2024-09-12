@@ -2,7 +2,7 @@ import React from "react";
 import { Box } from "@mui/material";
 
 import CustomRestriction from "../components/CustomCategoryRestriction/CustomRestriction";
-import Navbar from "../components/AddToMenu/Navbar";
+import Navbar from "../components/AddToMenu/navbar";
 const CustomRestrictions = () => {
   return (
     <Box
