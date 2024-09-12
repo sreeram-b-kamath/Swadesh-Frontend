@@ -72,7 +72,7 @@ const Menu: React.FC<MenuProps> = ({
         {ingredients.map((ingredient, index) => (
           <img
             key={index}
-            src={ingredient.image}
+            src={`data:image/png;base64,${ingredient.image}`}
             alt={ingredient.name}
             className={styles.ingredientImage}
             width={30}
