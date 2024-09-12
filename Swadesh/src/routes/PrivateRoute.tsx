@@ -1,15 +1,16 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { useLoginStore } from '../Store/useLoginStore';
 
 interface PrivateRouteProps {
   allowedRoles: number[];
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ allowedRoles }) => {
-  const { userRole } = useLoginStore();
+  // Retrieve and parse userRole from localStorage
+  const storedRole = localStorage.getItem('role');
+  const userRole = storedRole ? Number(storedRole) : null;
 
   if (userRole === null) {
-    // Handle the case where the userRole is not set
+    // Handle the case where userRole is not set
     return <Navigate to="/" />;
   }
 
@@ -17,3 +18,4 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ allowedRoles }) => {
 };
 
 export default PrivateRoute;
+

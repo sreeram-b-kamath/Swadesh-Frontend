@@ -100,11 +100,11 @@ const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
       }
       try {
         const categoriesData = await fetchCategories(
-          initialValues.restaurantId, jwtToken
+          restaurantId, jwtToken
         );
         const ingredientsData = await fetchIngredients(jwtToken);
         setLoading(true);
-        const restrictionsData = await fetchRestriction(restaurantId);
+        const restrictionsData = await fetchRestriction(restaurantId, jwtToken);
 
         setCategories(categoriesData);
         setRestrictions(restrictionsData);

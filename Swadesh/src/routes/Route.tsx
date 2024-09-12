@@ -25,13 +25,15 @@ const RoutesComponent = () => {
         </Route>
         {/* Protect these routes based on the user's role */}
         <Route element={<PrivateRoute allowedRoles={[0]} />}>
-          <Route path="/preference" element={<Preference />} />
+          <Route path="/preference-selection" element={<Filter />} />
+          <Route path="/menu" element={<MenuPage />} />
+          <Route path="/preference/:restaurantId" element={<Preference />} />
         </Route>
 
         {/* Unprotected routes */}
-        <Route path="/preference-selection" element={<Filter />} />
+        {/* <Route path="/preference-selection" element={<Filter />} />
         <Route path="/menu" element={<MenuPage />} />
-        <Route path="/preference/:restaurantId" element={<Preference />} /> 
+        <Route path="/preference/:restaurantId" element={<Preference />} />  */}
       </Routes>
     </BrowserRouter>
   );
