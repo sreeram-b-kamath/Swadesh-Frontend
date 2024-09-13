@@ -23,8 +23,8 @@ import {
   Restriction,
   fetchCategories,
 } from "../../Store/AddToMenu/AddToMenuStore";
-import { useLoginStore } from '../../Store/useLoginStore';
-import { LoginState } from '../../Store/useLoginStore';
+import { useLoginStore } from "../../Store/useLoginStore";
+import { LoginState } from "../../Store/useLoginStore";
 
 const resizeFile = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -45,8 +45,6 @@ const resizeFile = (file: File): Promise<string> =>
       "base64"
     );
   });
-
-  
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -91,7 +89,9 @@ const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [fileName, setFileName] = useState("Upload Image");
   const { restaurantId } = useLoginStore();
-  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
+  const { jwtToken } = useLoginStore((state: LoginState) => ({
+    jwtToken: state.jwtToken,
+  }));
   useEffect(() => {
     const fetchDataForDropdown = async () => {
       if (!restaurantId) {
@@ -99,9 +99,7 @@ const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
         return;
       }
       try {
-        const categoriesData = await fetchCategories(
-          restaurantId, jwtToken
-        );
+        const categoriesData = await fetchCategories(restaurantId, jwtToken);
         const ingredientsData = await fetchIngredients(jwtToken);
         setLoading(true);
         const restrictionsData = await fetchRestriction(restaurantId, jwtToken);
@@ -119,7 +117,7 @@ const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
     if (jwtToken) {
       fetchDataForDropdown();
     }
-  }, [jwtToken, restaurantId]);  // <- Add jwtToken as a dependency  
+  }, [jwtToken, restaurantId]); // <- Add jwtToken as a dependency
 
   return (
     <>
@@ -214,7 +212,7 @@ const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                         },
                       }}
                       id="description"
-                      label="Example:Idli Sambar is a South Indian breakfast meal where soft fluffy steamed cakes known as idli are served with sambar."
+                      label="Example:Idli Sambar is a South Indian breakfast."
                       variant="outlined"
                       fullWidth
                       name="description"

@@ -6,10 +6,10 @@ import {
   Button,
   TextField,
   Grid,
-//   FormControl,
-//   InputLabel,
-//   Select,
-//   MenuItem,
+  //   FormControl,
+  //   InputLabel,
+  //   Select,
+  //   MenuItem,
   CircularProgress,
 } from "@mui/material";
 import axios from "axios";
@@ -39,9 +39,9 @@ const EditMenuModal: React.FC<EditMenuModalProps> = ({
     ingredientIds: [] as number[],
   });
 
-//   const [categories, setCategories] = useState<any[]>([]);
-//   const [restrictions, setRestrictions] = useState<any[]>([]);
-//   const [ingredients, setIngredients] = useState<any[]>([]);
+  //   const [categories, setCategories] = useState<any[]>([]);
+  //   const [restrictions, setRestrictions] = useState<any[]>([]);
+  //   const [ingredients, setIngredients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
@@ -206,7 +206,7 @@ const EditMenuModal: React.FC<EditMenuModalProps> = ({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 400,
+          width: 300,
           bgcolor: "#e4ffd6",
           boxShadow: 24,
           p: 4,
@@ -214,7 +214,12 @@ const EditMenuModal: React.FC<EditMenuModalProps> = ({
           overflowY: "auto",
         }}
       >
-        <Typography sx={{color:"#446732"}} variant="h6" component="h2" gutterBottom>
+        <Typography
+          sx={{ color: "#446732" }}
+          variant="h6"
+          component="h2"
+          gutterBottom
+        >
           Edit Menu Items
         </Typography>
         <form onSubmit={handleSubmit}>
@@ -306,11 +311,7 @@ const EditMenuModal: React.FC<EditMenuModalProps> = ({
             </Grid> */}
 
             <Grid item xs={12}>
-              <TextField
-                type="file"
-                onChange={handleImageUpload}
-                fullWidth
-              />
+              <TextField type="file" onChange={handleImageUpload} fullWidth />
               {previewImage && (
                 <Box mt={2}>
                   <img
@@ -323,34 +324,34 @@ const EditMenuModal: React.FC<EditMenuModalProps> = ({
             </Grid>
 
             <Grid item xs={12} sx={{ textAlign: "right" }}>
-  <Button
-    variant="contained"
-    type="submit"
-    sx={{
-      backgroundColor: "green", // Button background color
-      color: "white", // Text color
-      "&:hover": {
-        backgroundColor: "darkgreen", // Hover effect
-      },
-    }}
-  >
-    Save
-  </Button>
-  <Button
-    variant="outlined"
-    onClick={handleClose}
-    sx={{
-      ml: 2,
-      borderColor: "green", // Border color for outlined button
-      color: "green", 
-      "&:hover": {
-        backgroundColor: "rgba(0, 128, 0, 0.1)",
-      },
-    }}
-  >
-    Cancel
-  </Button>
-</Grid>
+              <Button
+                variant="contained"
+                type="submit"
+                sx={{
+                  backgroundColor: "green", // Button background color
+                  color: "white", // Text color
+                  "&:hover": {
+                    backgroundColor: "darkgreen", // Hover effect
+                  },
+                }}
+              >
+                Save
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={handleClose}
+                sx={{
+                  ml: 2,
+                  borderColor: "green", // Border color for outlined button
+                  color: "green",
+                  "&:hover": {
+                    backgroundColor: "rgba(0, 128, 0, 0.1)",
+                  },
+                }}
+              >
+                Cancel
+              </Button>
+            </Grid>
           </Grid>
         </form>
       </Box>
