@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import Checkbox from "@mui/material/Checkbox";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Chip from "@mui/material/Chip";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-import { useNavigate } from "react-router-dom";
-import { useLoginStore } from "../../Store/useLoginStore";
-
-const defaultRestrictions = ["Vegan", "Gluten-Free", "Nut-Free"];
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'; 
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Checkbox from '@mui/material/Checkbox';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip'; 
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { useNavigate } from 'react-router-dom';
+import { useLoginStore } from '../../Store/useLoginStore'; // Import the Zustand store
+import { LoginState } from '../../Store/useLoginStore';
+const defaultRestrictions = ['Vegan', 'Gluten-Free', 'Nut-Free'];   
 
 interface Restriction {
   id: number;
@@ -50,14 +50,17 @@ const CustomRestriction = () => {
     "success"
   );
   const navigate = useNavigate();
+
+  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
   const { restaurantId } = useLoginStore();
 
   useEffect(() => {
     const fetchRestrictions = async () => {
       try {
-        const response = await axios.get(
-          `https://localhost:7107/api/Restriction/${restaurantId}`
-        );
+        const response = await axios.get(`https://localhost:7107/api/Restriction/${restaurantId}` , {
+          headers: {
+             Authorization: `Bearer ${jwtToken}`, // Ensure this has the correct format
+          },});
         const data = response.data;
 
         if (data && data && data.length > 0) {
@@ -140,7 +143,10 @@ const CustomRestriction = () => {
             active: true,
           };
           console.log("Posting Payload:", payload);
-          return axios.post(`https://localhost:7107/api/Restriction`, payload);
+          return axios.post(`https://localhost:7107/api/Restriction`, payload , {
+            headers: {
+               Authorization: `Bearer ${jwtToken}`, // Ensure this has the correct format
+            },});
         });
         await Promise.all(addRequests);
       }
@@ -150,7 +156,10 @@ const CustomRestriction = () => {
       if (restrictionsToDelete.length > 0) {
         const deleteRequests = restrictionsToDelete.map((id) => {
           console.log("Deleting ID:", id);
-          return axios.delete(`https://localhost:7107/api/Restriction/${id}`);
+          return axios.delete(`https://localhost:7107/api/Restriction/${id}` , {
+            headers: {
+               Authorization: `Bearer ${jwtToken}`, // Ensure this has the correct format
+            },});
         });
         await Promise.all(deleteRequests);
       }

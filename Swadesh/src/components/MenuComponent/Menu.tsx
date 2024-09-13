@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import styles from './Menu.module.css';
-import filled from '../../assets/filled-fav.png';
-import outlined from '../../assets/outline-fav.png';
+import styles from "./Menu.module.css";
+import filled from "../../assets/filled-fav.png";
+import outlined from "../../assets/outline-fav.png";
 import Modal from "../MenuModal/MenuModal";
 
 interface MenuProps {
@@ -11,9 +11,18 @@ interface MenuProps {
   name: string;
   money: number;
   description: string;
+  ingredients: { name: string; image: string }[];
 }
 
-const Menu: React.FC<MenuProps> = ({ id, primaryImage, rating, name, money, description }) => {
+const Menu: React.FC<MenuProps> = ({
+  id,
+  primaryImage,
+  rating,
+  name,
+  money,
+  description,
+  ingredients,
+}) => {
   const [isFavorited, setIsFavorited] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -28,9 +37,12 @@ const Menu: React.FC<MenuProps> = ({ id, primaryImage, rating, name, money, desc
   const toggleFavorite = () => {
     const newFavoriteState = !isFavorited;
     setIsFavorited(newFavoriteState);
-    
+
     // Update sessionStorage with the new favorite state
-    sessionStorage.setItem(`isFavorited-${id}`, JSON.stringify(newFavoriteState));
+    sessionStorage.setItem(
+      `isFavorited-${id}`,
+      JSON.stringify(newFavoriteState)
+    );
   };
 
   const openModal = () => setIsModalOpen(true);
@@ -38,11 +50,11 @@ const Menu: React.FC<MenuProps> = ({ id, primaryImage, rating, name, money, desc
 
   return (
     <div className={styles.menucontainer} onClick={openModal}>
-      <img src={primaryImage} width={130}  alt={name} />
+      <img src={primaryImage} width={130} alt={name} />
       <h2 className={styles.truncated}>{name}</h2>
       <div className={styles.fav}>
         {/* <h3>{rating}</h3> */}
-      <h4>₹ {money}</h4>
+        <h4>₹ {money}</h4>
 
         <img
           src={isFavorited ? filled : outlined}
@@ -55,6 +67,20 @@ const Menu: React.FC<MenuProps> = ({ id, primaryImage, rating, name, money, desc
           height={20}
         />
       </div>
+
+      <div className={styles.ingredients}>
+        {ingredients.map((ingredient, index) => (
+          <img
+            key={index}
+            src={`data:image/png;base64,${ingredient.image}`}
+            alt={ingredient.name}
+            className={styles.ingredientImage}
+            width={30}
+            height={30}
+          />
+        ))}
+      </div>
+      
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}

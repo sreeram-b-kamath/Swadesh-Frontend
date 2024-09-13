@@ -1,3 +1,4 @@
+import React from "react";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
@@ -32,8 +33,8 @@ import {
   fetchIngredients,
   deleteMenuItems,
 } from "../../Store/AddToMenu/AddToMenuStore";
-import React from "react";
-import { useLoginStore } from "../../Store/useLoginStore";
+import { useLoginStore } from '../../Store/useLoginStore'; // Import the Zustand store
+import { LoginState } from '../../Store/useLoginStore';
 import EditMenuModal from "./EditMenuModal";
 
 export default function RecipeReviewCard() {
@@ -42,16 +43,20 @@ export default function RecipeReviewCard() {
   const [ingredient, setIngredient] = useState<Ingredients[]>([]);
   const [restrictions, setRestrictions] = useState<Restriction[]>([]);
   const [selectedRestriction, setSelectedRestriction] = useState<string>("");
+  const [alert, setAlert] = useState<{
+    message: string;
+    severity: "info" | "success" | "error" | "warning";
+  } | null>(null);
+  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
   const [successOpen, setSuccessOpen] = useState<boolean>(false);
   const [deleteFailureOpen, setdeleteFailureOpen] = useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const { restaurantId } = useLoginStore();
-  const validRestaurantId = restaurantId ?? -1;
+  const validRestaurantId = restaurantId ? restaurantId.toString() : string;
 
   const [fetchTrigger, setFetchTrigger] = useState(false); 
-
 
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [selectedMenuItemId, setSelectedMenuItemId] = useState<number | null>(
@@ -59,12 +64,12 @@ export default function RecipeReviewCard() {
   );
 
 
-  const handleDeleteClick = (menuItemId: number) => {
+  const handleDeleteClick = (menuItemId: number | null) => {
     setDeleteItemId(menuItemId);
     setConfirmOpen(true);
   };
 
-  const handleEdit = (itemId: number) => {
+  const handleEdit = (itemId: number | null) => {
     console.log("Editing menu item with ID:", itemId);
     setSelectedMenuItemId(itemId); 
     setEditModalOpen(true); 
@@ -93,7 +98,7 @@ export default function RecipeReviewCard() {
   const handleDeleteConfirm = async () => {
     if (deleteItemId !== null) {
       try {
-        await deleteMenuItems(deleteItemId);
+        await deleteMenuItems(deleteItemId, jwtToken);
         setMenuItems(menuItems.filter((item) => item.id !== deleteItemId));
         setSuccessOpen(true);
       } catch (error) {
@@ -107,10 +112,10 @@ export default function RecipeReviewCard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const MenuItemsData = await fetchMenuItems(validRestaurantId);
-        const IngredientsData = await fetchIngredients();
-        const restrictionsData = await fetchRestriction(validRestaurantId);
-        const categoriesData = await fetchCategories(validRestaurantId);
+        const MenuItemsData = await fetchMenuItems(validRestaurantId, jwtToken);
+        const IngredientsData = await fetchIngredients(jwtToken);
+        const restrictionsData = await fetchRestriction(validRestaurantId, jwtToken);
+        const categoriesData = await fetchCategories(validRestaurantId, jwtToken);
         setRestrictions(restrictionsData);
         setMenuItems(MenuItemsData);
         setIngredient(IngredientsData);

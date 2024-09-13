@@ -28,3 +28,17 @@
     white-space: normal;
     cursor: pointer;
 }
+.ingredients {
+    display: flex;
+    gap: 8px;
+    /* margin-top: 8px; */
+    /* background-color: yellow; */
+    height: 1.4 rem;
+
+  }
+  
+  .ingredientImage {
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
