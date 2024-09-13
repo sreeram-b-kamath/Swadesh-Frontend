@@ -89,7 +89,6 @@ const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
   const [fileName, setFileName] = useState("Upload Image");
   const { restaurantId } = useLoginStore();
 
-  
   useEffect(() => {
     const fetchDataForDropdown = async () => {
       if (!restaurantId) {
@@ -199,13 +198,15 @@ const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
                         "& .MuiInputLabel-root": {
                           fontSize: "12px",
                           color: "#446732",
+                          whiteSpace: "normal",
+                          wordWrap: "break-word",
                         },
                         "& .MuiInputBase-root": {
                           fontSize: "13px",
                         },
                       }}
                       id="description"
-                      label="Example: A brief description of your dish"
+                      label="Example:Idli Sambar is a South Indian breakfast meal where soft fluffy steamed cakes known as idli are served with sambar."
                       variant="outlined"
                       fullWidth
                       name="description"
