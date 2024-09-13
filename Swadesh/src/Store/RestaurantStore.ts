@@ -19,7 +19,7 @@ interface RestaurantState {
   loading: boolean;
   error: string | null;
 
-  fetchRestaurant: (restaurantId: string, jwtToken: string | null) => void;
+  fetchRestaurant: (restaurantId: string) => void;
 }
 
 const useRestaurantStore = create<RestaurantState>((set) => ({
@@ -27,7 +27,7 @@ const useRestaurantStore = create<RestaurantState>((set) => ({
   loading: false,
   error: null,
 
-  fetchRestaurant: async (restaurantId: string, jwtToken: string | null) => {
+  fetchRestaurant: async (restaurantId: string) => {
     set({ loading: true, error: null });
 
     try {
