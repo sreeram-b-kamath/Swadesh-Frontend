@@ -6,7 +6,6 @@ import { useRef, useState, useEffect } from "react";
 
 import axios from "axios"; 
 import { useLoginStore } from "../../Store/useLoginStore";
-import { LoginState } from '../../Store/useLoginStore';
 
 
 interface Restaurant {
@@ -32,7 +31,7 @@ const Navbar = () => {
     setIsNavOpen(!isNavOpen);
   };
 
-  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
+  const jwtToken  = localStorage.getItem('jwtToken');
 
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);

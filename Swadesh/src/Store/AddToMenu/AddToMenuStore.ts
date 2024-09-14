@@ -53,7 +53,7 @@ const IngredientURL = "https://localhost:7107/api/Ingredients";
 const RestrictionURL = "https://localhost:7107/api/Restriction";
  
 export const fetchCategories = async (
-  restaurantId: number,
+  restaurantId: string | number,
   jwtToken: string | null
 ) => {
   try {
@@ -71,12 +71,12 @@ export const fetchCategories = async (
 };
  
 export const fetchMenuItems = async (
-  restaurantId: number,
+  restaurantId: string | number,
   jwtToken: string | null
 ) => {
   try {
     const response = await axios.get(
-      `${MenuURL}/ByRestaraunt/${restaurantId}`,
+      `${MenuURL}/ByRestaurant/${restaurantId}`,
       {
         headers: {
           Authorization: `Bearer ${jwtToken}`, // Add JWT token in the header
@@ -91,7 +91,7 @@ export const fetchMenuItems = async (
 };
  
 export const fetchRestriction = async (
-  restaurantId: number,
+  restaurantId: string | number,
   jwtToken: string | null
 ) => {
   try {
@@ -141,7 +141,7 @@ export const deleteMenuItems = async (
  
 export const postMenuItem = async (
   values: typeof initialValues,
-  restaurantId: number | string,
+  restaurantId: string | number,
   jwtToken: string | null
 ) => {
   try {

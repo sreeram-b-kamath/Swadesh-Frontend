@@ -24,7 +24,6 @@ import {
   fetchCategories,
 } from "../../Store/AddToMenu/AddToMenuStore";
 import { useLoginStore } from "../../Store/useLoginStore";
-import { LoginState } from "../../Store/useLoginStore";
 
 const resizeFile = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -89,9 +88,12 @@ const AddToMenuForm: React.FC<AddToMenuFormProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [fileName, setFileName] = useState("Upload Image");
   const { restaurantId } = useLoginStore();
-  const { jwtToken } = useLoginStore((state: LoginState) => ({
-    jwtToken: state.jwtToken,
+  const { jwtToken } = useLoginStore((state) => ({
+    jwtToken: state.jwtToken
   }));
+  console.log(jwtToken);
+  
+  
   useEffect(() => {
     const fetchDataForDropdown = async () => {
       if (!restaurantId) {

@@ -1,27 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Box, Button, TextField, CircularProgress, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useLoginStore } from '../../Store/useLoginStore';
-import { LoginState } from '../../Store/useLoginStore';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { loginUser, loginLoading, loginError, loginSuccess, userRole } = useLoginStore();
-  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
-  console.log(jwtToken);
-  
-
-  useEffect(() => {
-    if (loginSuccess) {
-      if (userRole === 1) {
-        navigate('/add-to-menu');
-      } else if (userRole === 0) {
-        navigate('/preference-selection');
-      }
-    }
-  }, [loginSuccess, userRole, navigate]);
+  const { loginUser } = useLoginStore();
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -39,7 +25,10 @@ const Login = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      // Login and handle redirect based on role
+      // Navigate to OTP page immediately
+      navigate('/otp-verification', { state: { mode: 'login', email: values.email } });
+
+      // Call the initiate-login API in the background after redirection
       await loginUser(values.email, values.password);
     },
   });
@@ -85,16 +74,12 @@ const Login = () => {
           <a href="#">Forgot Password?</a>
         </Box>
       </Box>
-      {loginError && (
-        <Typography color="error">{loginError}</Typography>
-      )}
       <Button
         variant="contained"
         sx={{ backgroundColor: "#006E1A" }}
         type="submit"
-        disabled={loginLoading}
       >
-        {loginLoading ? <CircularProgress size={24} /> : 'Login'}
+        Login
       </Button>
     </Box>
   );
