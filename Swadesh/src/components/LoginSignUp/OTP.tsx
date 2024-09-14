@@ -3,6 +3,7 @@ import { MuiOtpInput } from 'mui-one-time-password-input';
 import { Box, Button, Typography, Grid, ThemeProvider, createTheme } from '@mui/material';
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRegistrationStore } from '../../Store/useRegisterStore';
+import { useLoginStore } from '../../Store/useLoginStore'; // Import login store
 
 interface OtpVerificationProps {
   onSubmit: (otp: string) => void;
@@ -54,8 +55,9 @@ const theme = createTheme({
 
 const OtpVerificationPage: React.FC<OtpVerificationProps> = ({ onSubmit }) => {
   const [otp, setOtp] = React.useState('');
-  const { state } = useLocation();
-  const navigate = useNavigate(); // Add useNavigate to handle navigation
+  const [error, setError] = React.useState<string | null>(null); // Added state for error handling
+  const { state } = useLocation(); // Fetch state passed from the previous page
+  const navigate = useNavigate();
 
   const {
     setOtp: setStoreOtp,
@@ -69,8 +71,14 @@ const OtpVerificationPage: React.FC<OtpVerificationProps> = ({ onSubmit }) => {
     setAddress,
   } = useRegistrationStore();
 
+  const { verifyOtpAndCompleteLogin } = useLoginStore(); // Use login OTP verification function
+
+  const handleChange = (newValue: any) => {
+    setOtp(newValue);
+  };
+
   React.useEffect(() => {
-    if (state) {
+    if (state && state.mode === 'register') {
       const { name, email, password, logo, ownerName, contact, address } = state;
       setEmail(email);
       setRestaurantName(name);
@@ -82,21 +90,49 @@ const OtpVerificationPage: React.FC<OtpVerificationProps> = ({ onSubmit }) => {
     }
   }, [state, setEmail, setRestaurantName, setPassword, setLogo, setOwnerName, setContact, setAddress]);
 
-  const handleChange = (newValue: any) => {
-    setOtp(newValue);
+  const handleSubmit = () => {
+    setError(null); // Reset error state
+    setStoreOtp(otp); // Set the OTP in the store
+
+    if (state?.mode === 'register') {
+      // Registration flow
+      registerUser()
+        .then(() => {
+          console.log('OTP verified and user registered successfully');
+          onSubmit(otp); // Notify parent component on successful registration
+          navigate('/'); // Navigate to the base page
+        })
+        .catch((error) => {
+          console.error('Error verifying OTP and registering user:', error);
+          setError('Failed to register. Please try again.'); // Show error
+        });
+    } else if (state?.mode === 'login') {
+      // Login flow: Verify OTP for login
+      const { email } = state;
+      verifyOtpAndCompleteLogin(otp, email)
+        .then(() => {
+          console.log('OTP verified and login successful');
+          
+          const role = localStorage.getItem('role');
+
+          // Redirect based on role
+          if (role === '1') {
+            navigate('/add-to-menu'); // Navigate to add-to-menu page
+          } else if (role === '0') {
+            navigate('/'); // Navigate to base page
+          }
+        })
+        .catch((error: any) => {
+          console.error('Error verifying OTP for login:', error);
+          setError('Failed to verify OTP. Please check your OTP and try again.'); // Show error
+        });
+    }
   };
 
-  const handleSubmit = () => {
-    setStoreOtp(otp); // Set the OTP in the store
-    registerUser() // Call the API using the registerUser method
-      .then(() => {
-        console.log('OTP verified and user registered successfully');
-        onSubmit(otp); // Notify parent component on successful registration
-        navigate('/'); // Navigate back to the base page after successful registration
-      })
-      .catch((error) => {
-        console.error('Error verifying OTP and registering user:', error);
-      });
+  const handleResendOtp = () => {
+    // Placeholder for Resend OTP logic
+    console.log('Resend OTP clicked');
+    // You can implement an API call to resend the OTP here
   };
 
   return (
@@ -149,6 +185,16 @@ const OtpVerificationPage: React.FC<OtpVerificationProps> = ({ onSubmit }) => {
               }}
             />
           </Grid>
+
+          {/* Display Error Message */}
+          {error && (
+            <Grid item xs={12}>
+              <Typography variant="body1" align="center" sx={{ color: 'red', marginBottom: '20px' }}>
+                {error}
+              </Typography>
+            </Grid>
+          )}
+
           <Grid item xs={12}>
             <Button
               variant="contained"
@@ -171,7 +217,7 @@ const OtpVerificationPage: React.FC<OtpVerificationProps> = ({ onSubmit }) => {
           <Grid item xs={12}>
             <Typography variant="body2" align="center" sx={{ marginTop: '10px' }}>
               Didn't receive the OTP? Check your spam folder or{' '}
-              <a href="#" style={{ textDecoration: 'underline', color: theme.palette.text.secondary }}>
+              <a href="#" onClick={handleResendOtp} style={{ textDecoration: 'underline', color: theme.palette.text.secondary }}>
                 resend OTP
               </a>
             </Typography>

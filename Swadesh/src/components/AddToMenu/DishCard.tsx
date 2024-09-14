@@ -34,7 +34,6 @@ import {
   deleteMenuItems,
 } from "../../Store/AddToMenu/AddToMenuStore";
 import { useLoginStore } from '../../Store/useLoginStore'; // Import the Zustand store
-import { LoginState } from '../../Store/useLoginStore';
 import EditMenuModal from "./EditMenuModal";
 
 export default function RecipeReviewCard() {
@@ -47,14 +46,14 @@ export default function RecipeReviewCard() {
     message: string;
     severity: "info" | "success" | "error" | "warning";
   } | null>(null);
-  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
+  const jwtToken  = localStorage.getItem('jwtToken')
   const [successOpen, setSuccessOpen] = useState<boolean>(false);
   const [deleteFailureOpen, setdeleteFailureOpen] = useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const { restaurantId } = useLoginStore();
-  const validRestaurantId = restaurantId ? restaurantId.toString() : string;
+  const validRestaurantId = restaurantId ? restaurantId.toString() : number;
 
   const [fetchTrigger, setFetchTrigger] = useState(false); 
 

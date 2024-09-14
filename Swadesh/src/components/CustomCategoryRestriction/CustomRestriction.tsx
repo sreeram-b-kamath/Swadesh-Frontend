@@ -15,7 +15,6 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 import { useLoginStore } from '../../Store/useLoginStore'; // Import the Zustand store
-import { LoginState } from '../../Store/useLoginStore';
 const defaultRestrictions = ['Vegan', 'Gluten-Free', 'Nut-Free'];   
 
 interface Restriction {
@@ -51,7 +50,7 @@ const CustomRestriction = () => {
   );
   const navigate = useNavigate();
 
-  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
+  const jwtToken  = localStorage.getItem('jwtToken');
   const { restaurantId } = useLoginStore();
 
   useEffect(() => {

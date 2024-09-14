@@ -57,7 +57,7 @@ const SignUp = () => {
     onSubmit: (values) => {
       // Redirect to OTP page immediately
       const { name, email, password, logo, ownerName, contact, address } = values;
-      navigate('/otp-verification', { state: { name, email, password, logo, ownerName, contact, address } });
+      navigate('/otp-verification', { state: { mode: 'register', name, email, password, logo, ownerName, contact, address } });
 
       // Reset the API error state before calling the API
       setApiError(null);
