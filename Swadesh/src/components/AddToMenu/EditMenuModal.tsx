@@ -10,10 +10,11 @@ import {
 //   InputLabel,
 //   Select,
 //   MenuItem,
-  CircularProgress,
+
 } from "@mui/material";
 import axios from "axios";
 import Resizer from "react-image-file-resizer";
+import CategoryGif from '../../assets/categorygif.gif'
 
 interface EditMenuModalProps {
   open: boolean;
@@ -182,7 +183,7 @@ const EditMenuModal: React.FC<EditMenuModalProps> = ({
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: 400,
-            bgcolor: "background.paper",
+            bgcolor: "#e4ffd6",
             boxShadow: 24,
             p: 4,
             maxHeight: "90vh",
@@ -192,7 +193,14 @@ const EditMenuModal: React.FC<EditMenuModalProps> = ({
             alignItems: "center",
           }}
         >
-          <CircularProgress />
+        
+            <img
+              src={CategoryGif}
+              alt="Nothing selected"
+              style={{ width: "100px", height: "100px" }}
+            />
+           
+          
         </Box>
       </Modal>
     );
@@ -206,7 +214,7 @@ const EditMenuModal: React.FC<EditMenuModalProps> = ({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 400,
+          width: 330,
           bgcolor: "#e4ffd6",
           boxShadow: 24,
           p: 4,

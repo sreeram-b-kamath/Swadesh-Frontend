@@ -16,6 +16,7 @@ import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 import { useLoginStore } from '../../Store/useLoginStore'; // Import the Zustand store
 import { LoginState } from '../../Store/useLoginStore';
+import CategoryGif from '../../assets/categorygif.gif'
 
 const defaultCategories = ['Appetizers', 'Main Course', 'Dessert'];
 
@@ -247,7 +248,7 @@ const CustomCategory = () => {
                 label={category}
                 onDelete={() => handleDeleteCategory(category)}
                 sx={{
-                  backgroundColor: "#446732",
+                  backgroundColor: "#75b853",
                   color: "white",
                   borderRadius: 3,
                 }}
@@ -255,9 +256,16 @@ const CustomCategory = () => {
             ))}
           </Box>
         ) : (
-          <Typography sx={{ color: "grey" }} variant="body1">
-            Nothing selected
-          </Typography>
+          <Box sx={{display:'flex',flexDirection:'column', alignItems:'center',gap:1}}>
+            <img
+              src={CategoryGif}
+              alt="Nothing selected"
+              style={{ width: "100px", height: "100px" }}
+            />
+            <Typography sx={{ color: "grey" }} variant="body1">
+              Nothing selected
+            </Typography>
+          </Box>
         )}
 
         <Box sx={{ display: "flex", justifyContent: "center", mt: 6, gap: 1 }}>
