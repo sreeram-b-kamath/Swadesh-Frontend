@@ -6,7 +6,6 @@ import { useRef, useState, useEffect } from "react";
 
 import axios from "axios"; 
 import { useLoginStore } from "../../Store/useLoginStore";
-import { LoginState } from '../../Store/useLoginStore';
 
 
 interface Restaurant {
@@ -24,6 +23,7 @@ const Navbar = () => {
 
   const navRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef();
+  const qrCodeRef = useRef<SVGSVGElement | null>(null);
   const { restaurantId } = useLoginStore();
 
   // Function to toggle the navbar
@@ -31,7 +31,7 @@ const Navbar = () => {
     setIsNavOpen(!isNavOpen);
   };
 
-  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
+  const jwtToken  = localStorage.getItem('jwtToken');
 
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);
@@ -55,6 +55,27 @@ const Navbar = () => {
     fetchRestaurantData();
   }, [jwtToken]);  // Ensure jwtToken is included in the dependency array
   
+  const downloadQRCode = () => {
+    if (qrCodeRef.current) {
+      const svg = qrCodeRef.current;
+      const svgData = new XMLSerializer().serializeToString(svg);
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx?.drawImage(img, 0, 0);
+        const pngFile = canvas.toDataURL("image/png");
+        const downloadLink = document.createElement("a");
+        downloadLink.download = `qr-code-${restaurantId}.png`;
+        downloadLink.href = pngFile;
+        downloadLink.click();
+      };
+      img.src = "data:image/svg+xml;base64," + btoa(svgData);
+    }
+  };
+
   return (
     <>
       <Box
@@ -248,13 +269,14 @@ const Navbar = () => {
                 }}
               >
                 <QRCode
-                        value={"http://192.168.221.87:5173/preference-selection"}
+                        value={`http://192.168.1.6:5173/preference/${restaurantId}`}
                         bgColor={"#FFFFFF"}
                         fgColor={"#000000"}
                         size={256}
+                        ref={qrCodeRef}
                     />
               </Box>
-              <Button>Download</Button>
+              <Button onClick={downloadQRCode}>Download</Button>
             </Box>
           </Box>
         </Box>

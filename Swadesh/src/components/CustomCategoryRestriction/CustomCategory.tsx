@@ -50,7 +50,7 @@ const CustomCategory = () => {
   const navigate = useNavigate();
 
   // Access the JWT token from Zustand store
-  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
+  const jwtToken  = localStorage.getItem('jwtToken');
   const { restaurantId } = useLoginStore();
 
   useEffect(() => {
@@ -58,8 +58,11 @@ const CustomCategory = () => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7107/api/Category/${restaurantId}`
-        );
+          `https://localhost:7107/api/Category/${restaurantId}`, {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`, // Add JWT token in the header
+          },
+      });
         const data = response.data;
         console.log(response);
         console.log(response.data);

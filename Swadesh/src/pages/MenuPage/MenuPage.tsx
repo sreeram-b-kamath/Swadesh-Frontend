@@ -4,8 +4,8 @@ import menu from "../../assets/Menu.svg";
 import vector from "../../assets/Vector.svg";
 import translate from "../../assets/translate.svg";
 import Menu from "../../components/MenuComponent/Menu";
-import outlined from "../../assets/outline-fav.png"
-import filled from "../../assets/filled-fav.png"
+import outlined from "../../assets/outline-fav.png";
+import filled from "../../assets/filled-fav.png";
 
 import {
   FormControl,
@@ -15,6 +15,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 
+import useRestaurantStore from "../../Store/RestaurantStore"; // Import the restaurant store
 import useMenuStore from "../../Store/useMenuStore";
 import { useLocation } from "react-router-dom";
 
@@ -48,7 +49,7 @@ const MenuPage = () => {
   const location = useLocation();
   const { restaurantId } = location.state || {}; 
   const { filterIds } = location.state || {};
-  
+
   const body2 = {
     restaurantId: restaurantId,
     filterIds: filterIds,
@@ -65,10 +66,15 @@ const MenuPage = () => {
     setFavoritedItems(favorites);
   };
 
+  // Fetch restaurant details from the store
+  const { restaurant } = useRestaurantStore((state) => ({
+    restaurant: state.restaurant,
+  }));
+
   useEffect(() => {
     fetchAll(body2);
     getAllCategoryNames();
-    getFavoriteItems(); 
+    getFavoriteItems();
     console.log(body2);
   }, [fetchAll, getAllCategoryNames, filterIds, restaurantId]);
 
@@ -86,7 +92,7 @@ const MenuPage = () => {
 
   const toggleShowFavorites = () => {
     setShowFavorites(!showFavorites);
-    getFavoriteItems(); 
+    getFavoriteItems();
   };
 
   return (
@@ -95,14 +101,18 @@ const MenuPage = () => {
         <img src={menu} alt="" />
         <div className={styles.middlepart}>
           <img src={vector} alt="" />
-          <h2 className={styles.appbar_heading}>THAAL KITCHEN</h2>
+          <h2 className={styles.appbar_heading}>
+            {restaurant ? restaurant.name : "Loading..."} {/* Display restaurant name */}
+          </h2>
         </div>
         <div className={styles.favoriteButtonContainer}>
-        <img className={styles.favmode}
-        src={showFavorites ? filled : outlined} onClick={toggleShowFavorites}
-          alt="Favorite"
-/>
-      </div>
+          <img
+            className={styles.favmode}
+            src={showFavorites ? filled : outlined}
+            onClick={toggleShowFavorites}
+            alt="Favorite"
+          />
+        </div>
       </div>
 
       <div className={styles.dropdowncontainer}>
@@ -128,7 +138,7 @@ const MenuPage = () => {
           </FormControl>
         </div>
       </div>
-      
+
       {showFavorites ? (
         <div>
           <h4 className={styles.category_heading}>Favorites</h4>

@@ -53,7 +53,7 @@ const CustomRestriction = () => {
   );
   const navigate = useNavigate();
 
-  const { jwtToken } = useLoginStore((state: LoginState) => ({ jwtToken: state.jwtToken }));
+  const jwtToken  = localStorage.getItem('jwtToken');
   const { restaurantId } = useLoginStore();
 
   useEffect(() => {
