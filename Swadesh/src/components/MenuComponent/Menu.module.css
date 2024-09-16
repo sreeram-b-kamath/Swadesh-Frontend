@@ -1,0 +1,44 @@
+.menucontainer{
+    display: inline-block;
+    width: 145px; /* Set your desired width for each item */
+    /* height: 160px; Set your desired height for each item */
+    margin-right: 10px; 
+    background-color: #DBE6D5; /* Example background color */
+    text-align: center;
+    padding: 10px;
+    /* line-height: 100px;  */
+    border-radius: 5px; /* Optional: Adds rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    color: #1F1C1C;
+    
+}
+.fav{
+    display: flex;
+    justify-content: space-around;
+    padding: 0px;
+}
+.truncated {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.expanded {
+    white-space: normal;
+    cursor: pointer;
+}
+.ingredients {
+    display: flex;
+    gap: 8px;
+    /* margin-top: 8px; */
+    /* background-color: yellow; */
+    height: 1.4 rem;
+
+  }
+  
+  .ingredientImage {
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
