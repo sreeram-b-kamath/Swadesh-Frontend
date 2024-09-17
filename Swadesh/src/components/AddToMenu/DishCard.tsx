@@ -388,7 +388,6 @@ export default function RecipeReviewCard() {
               </Grid>
             </div>
           ))}
-          ;
           {editModalOpen && (
             <EditMenuModal
             open={editModalOpen}

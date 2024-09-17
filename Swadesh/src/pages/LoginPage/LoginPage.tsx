@@ -28,7 +28,7 @@ const LoginPage = () => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          height: "75%",
+          height: "85%",
           width: "40%",
           justifyContent: "center",
           alignItems: "center",

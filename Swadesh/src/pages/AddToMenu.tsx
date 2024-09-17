@@ -146,7 +146,6 @@ const AddToMenu = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-
       <Snackbar
         open={failureSnackbarOpen}
         autoHideDuration={6000}

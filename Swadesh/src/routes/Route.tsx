@@ -9,6 +9,7 @@ import Filter from '../pages/FilterPage/Filter';
 import MenuPage from '../pages/MenuPage/MenuPage';
 import AddToMenu from '../pages/AddToMenu';
 import PrivateRoute from './PrivateRoute'; // Import the PrivateRoute component
+import AdminLanding from '../pages/AdminLanding/AdminLanding';
 
 const RoutesComponent = () => {
   return (
@@ -18,20 +19,18 @@ const RoutesComponent = () => {
         <Route path="/SignUp" element={<SignUp />} />
         <Route path="/otp-verification" element={<OtpVerificationPage onSubmit={function (otp: string): void {
                   throw new Error('Function not implemented.');}} />} />
-        <Route element={<PrivateRoute allowedRoles={[1]} />}>
-          <Route path="/add-to-menu" element={<AddToMenu />} />
-          <Route path="/categories" element={<CustomCategories />} />
-          <Route path="/restrictions" element={<CustomRestrictions />} />
-        </Route>
         {/* Protect these routes based on the user's role */}
         <Route element={<PrivateRoute allowedRoles={[0]} />}>
-          
+          <Route path='/admin' element = {<AdminLanding/>}/>
         </Route>
 
         {/* Unprotected routes */}
         <Route path="/preference-selection" element={<Filter />} />
           <Route path="/menu" element={<MenuPage />} />
           <Route path="/preference/:restaurantId" element={<Preference />} />
+          <Route path="/add-to-menu" element={<AddToMenu />} />
+          <Route path="/categories" element={<CustomCategories />} />
+          <Route path="/restrictions" element={<CustomRestrictions />} />
       </Routes>
     </BrowserRouter>
   );
