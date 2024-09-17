@@ -119,7 +119,7 @@ const OtpVerificationPage: React.FC<OtpVerificationProps> = ({ onSubmit }) => {
           if (role === '1') {
             navigate('/add-to-menu'); // Navigate to add-to-menu page
           } else if (role === '0') {
-            navigate('/'); // Navigate to base page
+            navigate('/admin'); // Navigate to base page
           }
         })
         .catch((error: any) => {

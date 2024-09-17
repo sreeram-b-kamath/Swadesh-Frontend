@@ -50,7 +50,7 @@ const Menu: React.FC<MenuProps> = ({
 
   return (
     <div className={styles.menucontainer} onClick={openModal}>
-      <img src={primaryImage} width={130} alt={name} />
+      <img src={primaryImage} width={130} height={130} alt={name} />
       <h2 className={styles.truncated}>{name}</h2>
       <div className={styles.fav}>
         {/* <h3>{rating}</h3> */}
